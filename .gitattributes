@@ -126,11 +126,14 @@
 *.otf lfs-file
 
 # Bundles and binaries
+*.bundle/** lfs-file
 *.dll lfs-file
 *.exe lfs-file
 *.mdb lfs-file
 *.pdb lfs-file
 *.so lfs-file
+*.a lfs-file 
+*.dylib lfs-file 
 
 # Packaging
 *.zip lfs-file
