@@ -77,5 +77,11 @@ public class DialogueManager : MonoBehaviour
     {
         isTalking = false;
         dialogueUI.SetActive(false);
+
+        // 【新增】对话一结束，立刻启动 60 秒倒计时
+        if (CountdownTimer.Instance != null)
+        {
+            CountdownTimer.Instance.StartCountdown(60f); // 这里的 60f 可以改成你想要的秒数
+        }
     }
 }
