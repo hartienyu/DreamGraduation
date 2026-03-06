@@ -1,16 +1,16 @@
-using UnityEngine;
+锘縰sing UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    [Header("拖入 JSON 对话文件")]
+    [Header("脥脧脠毛 JSON 露脭禄掳脦脛录镁")]
     public TextAsset dialogueJSON;
 
-    [Header("触发设置")]
+    [Header("麓楼路垄脡猫脰脙")]
     public bool playOnStart = false;
 
-    private void Start()
+    private void Update()
     {
-        if (playOnStart)
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             TriggerDialogue();
         }

@@ -1,5 +1,6 @@
-using UnityEngine;
+锘縰sing System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 [System.Serializable]
 public class DialogueLine
@@ -11,18 +12,22 @@ public class DialogueLine
 [System.Serializable]
 public class DialogueData
 {
-    public DialogueLine[] dialogueLines; // 变量名必须和 JSON 里的键名一模一样
+    public DialogueLine[] dialoguePlot2_1;  // Plot 2.1 dialogue
+    public DialogueLine[] dialoguePlot2_2;
+    public DialogueLine[] dialoguePlot2_3;
+    public DialogueLine[] dialoguePlot2_4;
 }
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
-    [Header("UI 组件引用")]
+    [Header("UI 脳茅录镁脪媒脫脙")]
     public GameObject dialogueUI;
-    // 现在只需要一个 Text 组件了
+    // 脧脰脭脷脰禄脨猫脪陋脪禄赂枚 Text 脳茅录镁脕脣
     public TextMeshProUGUI combinedText;
 
+    private int currentPlotIndex = 1;
     private DialogueLine[] currentLines;
     private int currentLineIndex = 0;
     private bool isTalking = false;
@@ -41,19 +46,29 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // 接收 TextAsset (JSON文件) 并开始播放
+    // 陆脫脢脮 TextAsset (JSON脦脛录镁) 虏垄驴陋脢录虏楼路脜
     public void StartDialogue(TextAsset jsonFile)
     {
         if (isTalking || jsonFile == null) return;
 
-        // 解析 JSON 文本为 C# 对象
         DialogueData data = JsonUtility.FromJson<DialogueData>(jsonFile.text);
-        currentLines = data.dialogueLines;
-        currentLineIndex = 0;
-        isTalking = true;
 
-        dialogueUI.SetActive(true);
-        ShowNextLine();
+        // 陆芒脦枚 JSON 脦脛卤戮脦陋 C# 露脭脧贸
+        string fieldName = "dialoguePlot2_" + currentPlotIndex; // n = 1,2,3,...
+        var field = typeof(DialogueData).GetField(fieldName);
+        if (field != null)
+        {
+            currentLines = field.GetValue(data) as DialogueLine[];
+
+            if (currentLines != null && currentLines.Length > 0)
+            {
+                currentLineIndex = 0;
+                isTalking = true;
+                dialogueUI.SetActive(true);
+                ShowNextLine();
+                currentPlotIndex++;  // Plot index +1 every time this function is called (move to the next plot dialogue).
+            }
+        }
     }
 
     private void ShowNextLine()
@@ -66,8 +81,8 @@ public class DialogueManager : MonoBehaviour
 
         DialogueLine line = currentLines[currentLineIndex];
 
-        // 【核心修改点】将名字和内容合并，并使用富文本给名字上色
-        // 这里用了金黄色(#FFD700)并将名字加粗(<b>)，你可以根据需要修改
+        // 隆戮潞脣脨脛脨脼赂脛碌茫隆驴陆芦脙没脳脰潞脥脛脷脠脻潞脧虏垄拢卢虏垄脢鹿脫脙赂禄脦脛卤戮赂酶脙没脳脰脡脧脡芦
+        // 脮芒脌茂脫脙脕脣陆冒禄脝脡芦(#FFD700)虏垄陆芦脙没脳脰录脫麓脰(<b>)拢卢脛茫驴脡脪脭赂霉戮脻脨猫脪陋脨脼赂脛
         combinedText.text = $"<b><color=#FFD700>[{line.speaker}]</color></b>\n{line.content}";
 
         currentLineIndex++;
@@ -78,10 +93,10 @@ public class DialogueManager : MonoBehaviour
         isTalking = false;
         dialogueUI.SetActive(false);
 
-        // 【新增】对话一结束，立刻启动 60 秒倒计时
+        // 隆戮脨脗脭枚隆驴露脭禄掳脪禄陆谩脢酶拢卢脕垄驴脤脝么露炉 60 脙毛碌鹿录脝脢卤
         if (CountdownTimer.Instance != null)
         {
-            CountdownTimer.Instance.StartCountdown(60f); // 这里的 60f 可以改成你想要的秒数
+            CountdownTimer.Instance.StartCountdown(60f); // 脮芒脌茂碌脛 60f 驴脡脪脭赂脛鲁脡脛茫脧毛脪陋碌脛脙毛脢媒
         }
     }
 }
