@@ -38,7 +38,7 @@ public class CountdownTimer : MonoBehaviour
             }
 
             // 更新UI显示（纯英文），Mathf.CeilToInt 用于向上取整，去掉小数点
-            timerText.text = $"Time Left: {Mathf.CeilToInt(currentTime)}s";
+            timerText.text = $"倒计时: {Mathf.CeilToInt(currentTime)}s";
         }
     }
 
