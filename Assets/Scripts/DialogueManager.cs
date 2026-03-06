@@ -1,14 +1,27 @@
 using UnityEngine;
 using TMPro;
 
+[System.Serializable]
+public class DialogueLine
+{
+    public string speaker;
+    public string content;
+}
+
+[System.Serializable]
+public class DialogueData
+{
+    public DialogueLine[] dialogueLines; // 变量名必须和 JSON 里的键名一模一样
+}
+
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
     [Header("UI 组件引用")]
     public GameObject dialogueUI;
-    public TextMeshProUGUI speakerText;
-    public TextMeshProUGUI contentText;
+    // 现在只需要一个 Text 组件了
+    public TextMeshProUGUI combinedText;
 
     private DialogueLine[] currentLines;
     private int currentLineIndex = 0;
@@ -20,33 +33,26 @@ public class DialogueManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    // --- 新增：每帧检测按键输入 ---
     private void Update()
     {
-        // 如果当前正在对话，并且玩家按下了 Enter 键（Return 是主键盘回车，KeypadEnter 是小键盘回车）
         if (isTalking && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
             ShowNextLine();
         }
     }
-    // ------------------------------
 
-    public void StartDialogue(DialogueLine[] lines)
+    // 接收 TextAsset (JSON文件) 并开始播放
+    public void StartDialogue(TextAsset jsonFile)
     {
-        if (isTalking) return;
+        if (isTalking || jsonFile == null) return;
 
-        currentLines = lines;
+        // 解析 JSON 文本为 C# 对象
+        DialogueData data = JsonUtility.FromJson<DialogueData>(jsonFile.text);
+        currentLines = data.dialogueLines;
         currentLineIndex = 0;
         isTalking = true;
 
         dialogueUI.SetActive(true);
-        ShowNextLine();
-    }
-
-    // 这个方法保留，如果你的 UI 上还有透明按钮，依然可以支持鼠标点击
-    public void OnClickNext()
-    {
-        if (!isTalking) return;
         ShowNextLine();
     }
 
@@ -59,8 +65,10 @@ public class DialogueManager : MonoBehaviour
         }
 
         DialogueLine line = currentLines[currentLineIndex];
-        speakerText.text = line.speaker;
-        contentText.text = line.content;
+
+        // 【核心修改点】将名字和内容合并，并使用富文本给名字上色
+        // 这里用了金黄色(#FFD700)并将名字加粗(<b>)，你可以根据需要修改
+        combinedText.text = $"<b><color=#FFD700>[{line.speaker}]</color></b>\n{line.content}";
 
         currentLineIndex++;
     }
