@@ -3718,7 +3718,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &215750412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3746,7 +3746,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerOnce: 1
   playerTag: Player
-  nextColliderCube: {fileID: 0}
+  nextColliderCube: {fileID: 2126694368}
+  NPC: {fileID: 439385355}
   forceLookAtItem: 1
   itemToLookAt: {fileID: 910806546}
 --- !u!65 &215750414
@@ -6052,8 +6053,9 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 215750411}
+  NPC: {fileID: 0}
   forceLookAtItem: 0
-  itemToLookAt: {fileID: 0}
+  itemToLookAt: {fileID: 215750417}
 --- !u!65 &360392630
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11998,6 +12000,7 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 360392627}
+  NPC: {fileID: 0}
   forceLookAtItem: 0
   itemToLookAt: {fileID: 0}
 --- !u!65 &472241178
@@ -35502,6 +35505,7 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 472241175}
+  NPC: {fileID: 0}
   forceLookAtItem: 0
   itemToLookAt: {fileID: 0}
 --- !u!65 &1393660685
@@ -41054,6 +41058,7 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 1393660682}
+  NPC: {fileID: 439385355}
   forceLookAtItem: 0
   itemToLookAt: {fileID: 0}
 --- !u!65 &1755805261
@@ -45345,6 +45350,7 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 1755805259}
+  NPC: {fileID: 0}
   forceLookAtItem: 0
   itemToLookAt: {fileID: 0}
 --- !u!65 &2013075327
@@ -47376,6 +47382,144 @@ MonoBehaviour:
   boneID: 610
   ikEnabled: 0
   ikWeight: 1
+--- !u!1 &2126694368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2126694374}
+  - component: {fileID: 2126694373}
+  - component: {fileID: 2126694372}
+  - component: {fileID: 2126694371}
+  - component: {fileID: 2126694370}
+  - component: {fileID: 2126694369}
+  m_Layer: 0
+  m_Name: DialogueCube_Huahuo2
+  m_TagString: DialogueCube
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &2126694369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce034902178525f4588e9f8045d4c302, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueJSON: {fileID: 4900000, guid: 6fa62e4904d1a3840bc33b34446be9ff, type: 3}
+--- !u!114 &2126694370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c031a80c338f06b49a36380d3334b7fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerOnce: 1
+  playerTag: Player
+  nextColliderCube: {fileID: 0}
+  NPC: {fileID: 0}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
+--- !u!65 &2126694371
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &2126694372
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &2126694373
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &2126694374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126694368}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.54, y: 0.94, z: -10.2639}
+  m_LocalScale: {x: 0.19945043, y: 1.7830002, z: 6.700107}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2126723440 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1883587004862150386, guid: ff7864839c587cc4a90ebf2dde52f6c1, type: 3}
@@ -48237,4 +48381,5 @@ SceneRoots:
   - {fileID: 472241181}
   - {fileID: 360392633}
   - {fileID: 215750417}
+  - {fileID: 2126694374}
   - {fileID: 910806546}

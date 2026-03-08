@@ -7,6 +7,8 @@ public class CollideTriggerDialogues : MonoBehaviour
     public bool triggerOnce = true;  // 是否只触发一次
     public string playerTag = "Player";
     public GameObject nextColliderCube;  // 下一个对话的碰撞箱
+    [Header("触发NPC出现/隐藏")]
+    public GameObject NPC;  // 待触发行为的人物对象
 
     [Header("强制看物品设置 (主视角版)")]
     [Tooltip("勾选后，主相机会自动看向该物品并锁死鼠标")]
@@ -38,6 +40,18 @@ public class CollideTriggerDialogues : MonoBehaviour
         {
             isPlayerInTrigger = true;
             currentPlayer = other.GetComponent<PlayerMovement>(); // 获取玩家脚本
+
+            if (NPC != null)
+            {
+                if (NPC.activeSelf)
+                {
+                    NPC.SetActive(false);  // 让火花（鬼魂）先消失
+                }
+                else
+                {
+                    NPC.SetActive(true);
+                }
+            }
 
             if (nextColliderCube != null)
             {
