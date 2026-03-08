@@ -47,7 +47,13 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            // ========== 修改：把 triggerDialogues 作为第二个参数传给管理器 ==========
+            // ========== 新增：如果是 Huahuo3 剧情，先订阅对话结束的事件 ==========
+            if (dialogueJSON.name == "Huahuo3")
+            {
+                DialogueManager.Instance.OnDialogueFinished += OnDialogueFinishedHandler;
+            }
+
+            // 开启对话
             DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialogues);
             dialogueTriggered = true;
 
@@ -65,8 +71,41 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
+    // ========== 新增：当监听到任意对话结束时触发 ==========
+    private void OnDialogueFinishedHandler(string finishedDialogueName)
+    {
+        // 确认结束的确实是 Huahuo3
+        if (finishedDialogueName == "Huahuo3")
+        {
+            if (QuestManager.Instance != null)
+            {
+                QuestManager.Instance.StartQuest();
+                Debug.Log("Huahuo3 对话已完全结束，任务正式开启！");
+            }
+            else
+            {
+                Debug.LogError("找不到 QuestManager 实例！");
+            }
+
+            // 任务触发后注销事件，避免重复触发或内存泄漏
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.OnDialogueFinished -= OnDialogueFinishedHandler;
+            }
+        }
+    }
+
     public void ResetTrigger()
     {
         dialogueTriggered = false;
+    }
+
+    // 安全起见，如果物体被销毁，确保注销事件监听
+    private void OnDestroy()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.OnDialogueFinished -= OnDialogueFinishedHandler;
+        }
     }
 }

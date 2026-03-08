@@ -34,7 +34,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void StartQuest()
+    public void StartQuest()
     {
         isQuestActive = true;
         currentItemsFound = 0;

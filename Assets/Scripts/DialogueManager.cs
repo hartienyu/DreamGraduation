@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System; // ===== 新增：引入System以使用Action =====
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +20,10 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    // ========== 新增：定义一个对话结束的事件通知 ==========
+    public event Action<string> OnDialogueFinished;
+    private string currentDialogueName;
+
     [Header("UI组件引用")]
     public GameObject dialogueUI;
     public TextMeshProUGUI combinedText;
@@ -27,7 +32,7 @@ public class DialogueManager : MonoBehaviour
     private int currentLineIndex = 0;
     private bool isTalking = false;
 
-    // ========== 新增：用于记住当前是哪个触发器开启的对话 ==========
+    // 用于记住当前是哪个触发器开启的对话
     private CollideTriggerDialogues activeTrigger;
 
     private void Awake()
@@ -44,13 +49,15 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // ========== 修改：增加第二个参数 trigger ==========
     public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues trigger = null)
     {
         if (isTalking || jsonFile == null) return;
 
         // 记录传过来的触发器
         activeTrigger = trigger;
+
+        // ========== 新增：记录当前正在进行的对话名称 ==========
+        currentDialogueName = jsonFile.name;
 
         // 解析JSON
         NewDialogueData data = JsonUtility.FromJson<NewDialogueData>(jsonFile.text);
@@ -100,12 +107,15 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("对话结束");
 
-        // ========== 新增：对话结束，通知触发器恢复视角并解锁玩家 ==========
+        // 对话结束，通知触发器恢复视角并解锁玩家
         if (activeTrigger != null)
         {
             activeTrigger.OnDialogueEnded();
             activeTrigger = null; // 用完清空，防止影响下次对话
         }
+
+        // ========== 新增：对话结束(UI已关闭)，广播通知当前对话已结束 ==========
+        OnDialogueFinished?.Invoke(currentDialogueName);
 
         // 对话结束后启动倒计时（如果需要）
         if (CountdownTimer.Instance != null)

@@ -9,6 +9,9 @@ public class QuestUIManager : MonoBehaviour
     public GameObject questPanel;       // The background panel for the quest tracker
     public TextMeshProUGUI questText;   // The text showing progress (e.g., "Items: 1/3")
 
+    [Header("Splash Screen UI")]
+    public GameObject splashCanvas;
+
     [Header("Interaction Prompt UI")]
     public GameObject interactPanel;    // The panel that pops up near the item
     public TextMeshProUGUI interactText;// The text showing "[F] Apple"
@@ -23,6 +26,7 @@ public class QuestUIManager : MonoBehaviour
     {
         // Hide UI elements at the start of the game
         questPanel.SetActive(false);
+        splashCanvas.SetActive(false);
         interactPanel.SetActive(false);
 
         // Subscribe to QuestManager events
@@ -39,6 +43,12 @@ public class QuestUIManager : MonoBehaviour
     private void ShowQuestStarted()
     {
         questPanel.SetActive(true);
+        if (splashCanvas != null)
+        {
+            splashCanvas.SetActive(true);
+            // 显示 3 秒后，自动调用 HideSplashCanvas 方法把它关掉
+            Invoke(nameof(HideSplashCanvas), 3f);
+        }
         questText.text = $"找到隐藏的物品： 0/{QuestManager.Instance.totalItemsToFind}";
     }
 
@@ -72,4 +82,9 @@ public class QuestUIManager : MonoBehaviour
     {
         interactPanel.SetActive(false);
     }
+
+    private void HideSplashCanvas()
+{
+    if (splashCanvas != null) splashCanvas.SetActive(false);
+}
 }
