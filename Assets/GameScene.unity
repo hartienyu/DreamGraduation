@@ -3718,7 +3718,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &215750412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3747,6 +3747,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 0}
+  forceLookAtItem: 1
+  itemToLookAt: {fileID: 910806546}
 --- !u!65 &215750414
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3827,7 +3829,7 @@ Transform:
   m_GameObject: {fileID: 215750411}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.92, y: 0.94, z: -10.2639}
+  m_LocalPosition: {x: 14.45, y: 0.94, z: -10.2639}
   m_LocalScale: {x: 0.19945043, y: 1.7830002, z: 6.700107}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6050,6 +6052,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 215750411}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
 --- !u!65 &360392630
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11994,6 +11998,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 360392627}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
 --- !u!65 &472241178
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24283,6 +24289,37 @@ MonoBehaviour:
   boneID: 245
   ikEnabled: 0
   ikWeight: 1
+--- !u!1 &910806545
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 910806546}
+  m_Layer: 0
+  m_Name: EmptyLookAt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &910806546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910806545}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 6.883, y: 1.618, z: -8.3}
+  m_LocalScale: {x: 0.19945043, y: 1.7830002, z: 6.700107}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &910820855 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6855713648766472503, guid: ff7864839c587cc4a90ebf2dde52f6c1, type: 3}
@@ -28212,6 +28249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4c968f14696ace4b9ba40741fdb8d18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 1
   walkSpeed: 5
   runSpeed: 8
   turnSmoothTime: 0.1
@@ -35464,6 +35502,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 472241175}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
 --- !u!65 &1393660685
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -41014,6 +41054,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 1393660682}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
 --- !u!65 &1755805261
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -45303,6 +45345,8 @@ MonoBehaviour:
   triggerOnce: 1
   playerTag: Player
   nextColliderCube: {fileID: 1755805259}
+  forceLookAtItem: 0
+  itemToLookAt: {fileID: 0}
 --- !u!65 &2013075327
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -48193,3 +48237,4 @@ SceneRoots:
   - {fileID: 472241181}
   - {fileID: 360392633}
   - {fileID: 215750417}
+  - {fileID: 910806546}

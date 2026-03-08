@@ -2,7 +2,6 @@
 using TMPro;
 using UnityEngine;
 
-// 新的对话数据类，匹配你的JSON格式
 [System.Serializable]
 public class NewDialogueLine
 {
@@ -28,6 +27,9 @@ public class DialogueManager : MonoBehaviour
     private int currentLineIndex = 0;
     private bool isTalking = false;
 
+    // ========== 新增：用于记住当前是哪个触发器开启的对话 ==========
+    private CollideTriggerDialogues activeTrigger;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -42,10 +44,13 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // 接收 TextAsset (JSON文件) 并开始播放
-    public void StartDialogue(TextAsset jsonFile)
+    // ========== 修改：增加第二个参数 trigger ==========
+    public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues trigger = null)
     {
         if (isTalking || jsonFile == null) return;
+
+        // 记录传过来的触发器
+        activeTrigger = trigger;
 
         // 解析JSON
         NewDialogueData data = JsonUtility.FromJson<NewDialogueData>(jsonFile.text);
@@ -66,7 +71,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // 显示下一行对话
     private void ShowNextLine()
     {
         if (currentLineIndex >= currentLines.Length)
@@ -77,7 +81,6 @@ public class DialogueManager : MonoBehaviour
 
         NewDialogueLine line = currentLines[currentLineIndex];
 
-        // Dialogue's format
         if (string.IsNullOrEmpty(line.speaker))
         {
             combinedText.text = $"{line.content}";  // Thinking...
@@ -97,6 +100,13 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("对话结束");
 
+        // ========== 新增：对话结束，通知触发器恢复视角并解锁玩家 ==========
+        if (activeTrigger != null)
+        {
+            activeTrigger.OnDialogueEnded();
+            activeTrigger = null; // 用完清空，防止影响下次对话
+        }
+
         // 对话结束后启动倒计时（如果需要）
         if (CountdownTimer.Instance != null)
         {
@@ -104,7 +114,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // 检查是否正在对话
     public bool IsTalking()
     {
         return isTalking;

@@ -19,7 +19,6 @@ public class DialogueTrigger : MonoBehaviour
             Debug.LogError($"在 {gameObject.name} 上未找到 CollideTriggerDialogues 组件，请添加该组件！");
         }
 
-        // 检查是否已指定JSON文件
         if (dialogueJSON == null)
         {
             Debug.LogWarning($"请在 {gameObject.name} 的 DialogueTrigger 组件中拖入对话JSON文件！");
@@ -48,10 +47,11 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.StartDialogue(dialogueJSON);
+            // ========== 修改：把 triggerDialogues 作为第二个参数传给管理器 ==========
+            DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialogues);
             dialogueTriggered = true;
 
-            // 通知触发器对话已触发
+            // 通知触发器对话已触发 (锁定玩家和视角)
             if (triggerDialogues != null)
             {
                 triggerDialogues.OnDialogueTriggered();
@@ -65,7 +65,6 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
-    // 重置触发状态（如果需要重新触发）
     public void ResetTrigger()
     {
         dialogueTriggered = false;
