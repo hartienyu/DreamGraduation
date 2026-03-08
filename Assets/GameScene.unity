@@ -40453,8 +40453,8 @@ GameObject:
   - component: {fileID: 1755805260}
   - component: {fileID: 1755805265}
   m_Layer: 0
-  m_Name: DialogueCube
-  m_TagString: Untagged
+  m_Name: DialogueCube_Stadium
+  m_TagString: DialogueCube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
