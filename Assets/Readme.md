@@ -3,10 +3,12 @@ Assets/
 │   ├── MainMenu/
 │   └── GameScene/
 ├── 02_Scripts/              # 核心代码，按系统模块划分
-│   ├── Player/              # PlayerController 等视角与状态机控制
-│   ├── Interaction/         # InteractSystem 射线检测与交互接口
-│   ├── Dialogue/            # DialogueSystem 与 UI 渲染逻辑
-│   └── Core/                # 限时生存映射机制、全局状态管理
+│   ├── Managers/            # 全局管理器（通常挂载在空物体上，贯穿全局）
+│   ├── Player/              # 玩家角色控制
+│   ├── Characters/          # NPC 与敌对实体
+│   ├── Interactables/       # 环境与可交互遗物
+│   ├── UI/                  # 对话与界面
+│   └── Utils/               # 通用工具与特效
 ├── 03_Prefabs/              # 预制体，必须是组装完毕可直接拖入场景的资产
 │   ├── Characters/          # 如 花火 等 NPC 或敌对实体的预制体
 │   ├── Interactables/       # 包含触发器和检查脚本的遗物/线索预制体
