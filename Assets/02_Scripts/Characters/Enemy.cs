@@ -1,38 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
 //*****************************************
 //创建人： Trigger 
-//功能说明：僵尸
-//***************************************** 
+//功能说明：敌对实体（僵尸/恶灵）AI控制与伤害逻辑
+//*****************************************
 public class Enemy : MonoBehaviour
 {
     private Animator animator;
     public int HP = 20;
-    private FirstPersonController fpc;
+
+    private PlayerHealth playerHealth;
+    private Transform playerTransform;
+
     private NavMeshAgent nma;
     private bool isDead;
     private bool hasTarget;
-    private float attackCD=2;
+
+    public float attackCD = 2f;
     private float attackTimer;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        fpc = GameObject.Find("Player").GetComponent<FirstPersonController>();
         nma = GetComponent<NavMeshAgent>();
+
+        GameObject playerGo = GameObject.FindGameObjectWithTag("Player");
+        if (playerGo != null)
+        {
+            playerTransform = playerGo.transform;
+            playerHealth = playerGo.GetComponent<PlayerHealth>();
+        }
     }
 
     void Update()
     {
-        //死亡
-        if (isDead)
-        {
-            return;
-        }
-        //视野范围外
-        if (Vector3.Distance(transform.position,fpc.transform.position)>=5)
+        if (isDead || playerTransform == null) return;
+
+        float sqrDistanceToPlayer = (transform.position - playerTransform.position).sqrMagnitude;
+
+        if (sqrDistanceToPlayer >= 25f)
         {
             return;
         }
@@ -40,53 +47,61 @@ public class Enemy : MonoBehaviour
         {
             hasTarget = true;
         }
-        //有目标后开始攻击
+
         if (hasTarget)
         {
-            //到达攻击范围
-            if (Vector3.Distance(transform.position,fpc.transform.position)<=2)
+            if (sqrDistanceToPlayer <= 4f)
             {
-                Vector3 targetPos = fpc.transform.position;
-                transform.LookAt(new Vector3(targetPos.x,transform.position.y,targetPos.z));
+                Vector3 targetPos = playerTransform.position;
+                transform.LookAt(new Vector3(targetPos.x, transform.position.y, targetPos.z));
                 Attack();
             }
-            //移动
             else
             {
                 nma.isStopped = false;
-                nma.SetDestination(fpc.transform.position);
-                animator.SetBool("Move",true);
+                nma.SetDestination(playerTransform.position);
+                animator.SetBool("Move", true);
             }
         }
     }
-    /// <summary>
-    /// 僵尸受到伤害
-    /// </summary>
-    /// <param name="attackValue">伤害值</param>
+
     public void TakeDamage(int attackValue)
     {
+        if (isDead) return;
+
         HP -= attackValue;
-        animator.SetTrigger("Hit");
-        if (HP<=0)
+
+        if (HP <= 0)
         {
             isDead = true;
-            animator.SetBool("Die",true);
+            animator.SetBool("Die", true);
+
+            nma.isStopped = true;
+            nma.enabled = false;
+            Collider coll = GetComponent<Collider>();
+            if (coll != null) coll.enabled = false;
+        }
+        else
+        {
+            animator.SetTrigger("Hit");
         }
     }
-    /// <summary>
-    /// 攻击
-    /// </summary>
+
     private void Attack()
     {
         nma.isStopped = true;
         animator.SetBool("Move", false);
-        if (Time.time-attackTimer>=attackCD)
+
+        if (Time.time - attackTimer >= attackCD)
         {
             animator.SetTrigger("Attack");
-            fpc.TakeDamge();
+
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(10);
+            }
+
             attackTimer = Time.time;
         }
-       
-       
     }
 }

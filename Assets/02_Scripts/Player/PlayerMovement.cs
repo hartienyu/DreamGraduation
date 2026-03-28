@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using Cinemachine;
 
+//*****************************************
+//创建人： Trigger 
+//功能说明：玩家移动、跳跃、冲刺与Cinemachine视角控制
+//*****************************************
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("状态控制")]
-    public bool canMove = true;  // 新增：是否允许玩家控制移动和视角
+    public bool canMove = true;
 
     [Header("移动设置")]
     public float walkSpeed = 5f;
@@ -19,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     public float dashDuration = 0.2f;
     public float dashCooldown = 0.8f;
 
-    [Header("Cinemachine 视角缩放")]
+    [Header("Cinemachine 视角")]
     public CinemachineFreeLook freeLookCamera;
     public float zoomSpeed = 20f;
     public float minFOV = 30f;
@@ -47,48 +51,34 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // ========== 冲刺冷却 (无论是否能移动都需要走冷却) ==========
         if (dashCooldownTimer > 0)
-        {
             dashCooldownTimer -= Time.deltaTime;
-        }
 
-        // ========== 如果被禁止移动 (触发对话/强制看物品) ==========
         if (!canMove)
         {
-            // 停止冲刺状态
             isDashing = false;
-
-            // 停下动画
             if (anim != null)
             {
                 anim.SetFloat("Speed", 0f);
                 anim.SetBool("isJumping", false);
             }
 
-            // 依然需要应用重力，防止在空中触发对话时悬空卡住
             if (controller.isGrounded && velocity.y < 0)
-            {
                 velocity.y = -2f;
-            }
+
             velocity.y += gravity * Time.deltaTime;
             controller.Move(new Vector3(0, velocity.y, 0) * Time.deltaTime);
-
-            // 直接退出，不执行后续的玩家输入逻辑
             return;
         }
 
-        // ========== 1. 鼠标滚轮操控 Cinemachine 视角缩放 ==========
         HandleCinemachineZoom();
 
-        // ========== 重力处理 ==========
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
             if (anim != null) anim.SetBool("isJumping", false);
         }
 
-        // ========== 2. 冲刺输入检测 (鼠标右键) ==========
         if (Input.GetMouseButtonDown(1) && dashCooldownTimer <= 0 && !isDashing)
         {
             isDashing = true;
@@ -97,35 +87,27 @@ public class PlayerMovement : MonoBehaviour
             if (anim != null) anim.SetTrigger("Dash");
         }
 
-        // ========== 移动输入获取 ==========
         float horizontal = (Input.GetKey(KeyCode.D) ? 1f : 0f) - (Input.GetKey(KeyCode.A) ? 1f : 0f);
         float vertical = (Input.GetKey(KeyCode.W) ? 1f : 0f) - (Input.GetKey(KeyCode.S) ? 1f : 0f);
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        // ========== 3. 自由移动与冲刺逻辑 ==========
         if (isDashing)
         {
             controller.Move(transform.forward * dashSpeed * Time.deltaTime);
             dashTime -= Time.deltaTime;
-            if (dashTime <= 0)
-            {
-                isDashing = false;
-            }
+            if (dashTime <= 0) isDashing = false;
         }
         else
         {
-            // 跳跃
             if (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 if (anim != null) anim.SetBool("isJumping", true);
             }
 
-            // 检测 Shift 跑步
             bool isRunning = Input.GetKey(KeyCode.LeftShift);
             float currentMoveSpeed = isRunning ? runSpeed : walkSpeed;
 
-            // 基于摄像机视角的移动逻辑
             if (direction.magnitude >= 0.1f)
             {
                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -136,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
                 controller.Move(moveDir.normalized * currentMoveSpeed * Time.deltaTime);
             }
 
-            // 动画控制
             if (anim != null)
             {
                 float speedPercent = direction.magnitude * (isRunning ? 1f : 0.5f);
@@ -144,7 +125,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // ========== 应用重力 ==========
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
