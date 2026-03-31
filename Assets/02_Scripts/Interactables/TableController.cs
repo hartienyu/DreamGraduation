@@ -1,43 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
+//*****************************************
+//创建人： Trigger 
+//功能说明：桌子/祭坛交互触发器
+//*****************************************
 public class TableController : MonoBehaviour
 {
-    [Header("需要弹出的UI面板")]
-    public GameObject uiPanel;
+    [Header("绑定 UI 管理器")]
+    public ShopManager shopManager; // 【关键修改】：不再直接拖入 Panel，而是拖入整个 ShopManager 脚本
 
     // 用来记录玩家是否在交互范围内
     private bool canInteract = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // 游戏开始时确保UI是关闭的
-        if (uiPanel != null)
-        {
-            uiPanel.SetActive(false);
-        }
-    }
-
-    // Update is called once per frame
     void Update()
     {
         // 只有当玩家在范围内，并且按下了 F 键时，才触发UI
         if (canInteract && Input.GetKeyDown(KeyCode.F))
         {
-            if (uiPanel != null)
+            // 确保 ShopManager 存在，并且当前商店没有处于打开状态
+            if (shopManager != null && !shopManager.shopPanel.activeSelf)
             {
-                // 切换UI的显示/隐藏状态
-                bool isActive = uiPanel.activeSelf;
-                uiPanel.SetActive(!isActive);
-                UnityEngine.Cursor.lockState = CursorLockMode.None;
-                UnityEngine.Cursor.visible = true;
+                // 【核心修改】：呼叫 ShopManager 专属的打开方法！所有的视角锁定都在这里面执行
+                shopManager.OpenShop();
             }
         }
     }
-
 
     // 当有物体进入触发器范围时调用
     private void OnTriggerEnter(Collider other)
@@ -46,11 +35,9 @@ public class TableController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             canInteract = true;
-            Debug.Log("玩家进入了交互范围，可以按F键！");
-            // 【可选】你可以在这里显示一个悬浮的“按F交互”的小提示UI
+            Debug.Log("玩家进入了潜意识祭坛范围，可以按F键交互！");
         }
     }
-
 
     // 当有物体离开触发器范围时调用
     private void OnTriggerExit(Collider other)
@@ -59,12 +46,12 @@ public class TableController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             canInteract = false;
-            Debug.Log("玩家离开了交互范围。");
+            Debug.Log("玩家离开了祭坛范围。");
 
-            // 玩家离开时，自动把弹出的UI关掉
-            if (uiPanel != null)
+            // 安全机制：如果玩家离开了（比如被敌人击飞），自动调用退出方法，恢复视角和移动
+            if (shopManager != null && shopManager.shopPanel.activeSelf)
             {
-                uiPanel.SetActive(false);
+                shopManager.OnExitButtonClicked();
             }
         }
     }

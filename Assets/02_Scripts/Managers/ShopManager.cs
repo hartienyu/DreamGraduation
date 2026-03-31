@@ -1,125 +1,201 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using Cinemachine; // 必须引入，用于精准控制和锁定视角
 
+//*****************************************
+//创建人： Trigger 
+//功能说明：动态商店系统（潜意识祭坛），控制商品生成、购买逻辑与视角/移动锁定
+//*****************************************
 public class ShopManager : MonoBehaviour
 {
-    [Header("玩家数据")]
+    // 定义商品的数据结构
+    [System.Serializable]
+    public class ItemData
+    {
+        public string itemName;
+        public Sprite itemIcon;    // 物品的图标/图片
+        public string description;
+        public int price;
+        public int maxQuantity;
+        public bool isAvailable;
+        public ItemEffect effectType;
+        public int effectValue;
+    }
+
+    // 物品效果枚举
+    public enum ItemEffect { Heal, MaxHealthUp, SpeedUp }
+
+    [Header("潜意识数据")]
     public int playerPoints = 2000;
 
     [Header("系统引用")]
-    public PlayerHealth playerHealth; // 【新增】引用玩家的血量脚本
-    public PlayerMovement playerMovement; // 【新增】引用玩家的移动脚本
+    public PlayerHealth playerHealth;
+    public PlayerMovement playerMovement;
 
     [Header("UI 引用")]
     public GameObject shopPanel;
-    public TextMeshProUGUI currentPointsText;
+    public TextMeshProUGUI pointsText;
 
-    [Header("商品复选框 (Toggles)")]
-    public Toggle breadToggle;
-    public Toggle chickenToggle;
-    public Toggle armorToggle;
-    public Toggle shoesToggle;
+    [Header("预制体生成配置")]
+    public GameObject itemPrefab; // 拖入你刚做好的商品预制体 (ItemCard_Template)
+    public Transform itemContainer; // 拖入 Scroll View 里的 Content 父物体
 
-    // 商品价格设定
-    private int priceBread = 20;
-    private int priceChicken = 100;
-    private int priceArmor = 1500;
-    private int priceShoes = 500;
+    [Header("商品列表配置")]
+    public List<ItemData> shopItems; // 在 Unity 面板里直接配置商品
 
-    // 商品效果设定
-    private int healAmountBread = 30;   // 面包回血量
-    private int healAmountChicken = 80; // 烤鸡回血量
+    // 记录生成的 UI 卡片，方便后续刷新
+    private List<ShopItemUI> spawnedCards = new List<ShopItemUI>();
 
     void Start()
     {
         UpdatePointsDisplay();
+        GenerateShopUI();
+
+        // 保险机制：确保开局时商店 UI 是关闭的，鼠标是锁定的
+        if (shopPanel != null && shopPanel.activeSelf)
+        {
+            OnExitButtonClicked();
+        }
+    }
+
+    // 监听 Esc 键关闭商店
+    void Update()
+    {
+        if (shopPanel != null && shopPanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                OnExitButtonClicked();
+            }
+        }
     }
 
     private void UpdatePointsDisplay()
     {
-        if (currentPointsText != null)
-        {
-            currentPointsText.text = playerPoints.ToString();
-        }
+        if (pointsText != null) pointsText.text = "记忆碎片: " + playerPoints;
     }
 
-    public void OnBuyButtonClicked()
+    // 根据数据动态生成商店 UI
+    private void GenerateShopUI()
     {
-        int totalCost = 0;
-
-        // 计算总价
-        if (breadToggle.isOn) totalCost += priceBread;
-        if (chickenToggle.isOn) totalCost += priceChicken;
-        if (armorToggle.isOn) totalCost += priceArmor;
-        if (shoesToggle.isOn) totalCost += priceShoes;
-
-        if (totalCost == 0)
+        // 先清空旧的卡片（防止重复打开商店时叠加）
+        foreach (Transform child in itemContainer)
         {
-            Debug.Log("商店提示：你没有选择任何商品！");
-            return;
+            Destroy(child.gameObject);
         }
+        spawnedCards.Clear();
 
-        // 检查余额
-        if (playerPoints >= totalCost)
+        // 遍历商品列表，生成预制体
+        for (int i = 0; i < shopItems.Count; i++)
         {
-            // 扣钱
-            playerPoints -= totalCost;
-            UpdatePointsDisplay();
+            GameObject newObj = Instantiate(itemPrefab, itemContainer);
+            ShopItemUI cardUI = newObj.GetComponent<ShopItemUI>();
 
-            if (breadToggle.isOn)
-            {
-                // 调用 PlayerHealth 里的 Heal 函数
-                if (playerHealth != null) playerHealth.Heal(healAmountBread);
-                Debug.Log("购买并吃下了面包，恢复了体力！");
-            }
-
-            if (chickenToggle.isOn)
-            {
-                if (playerHealth != null) playerHealth.Heal(healAmountChicken);
-                Debug.Log("购买并吃下了烤鸡，大量恢复了体力！");
-            }
-
-            if (armorToggle.isOn)
-            {
-                if (playerHealth != null) playerHealth.UpgradeMaxHealth(50); // 比如永久增加 50 点生命上限
-                Debug.Log("获得了防护服！永久增加了生命上限。");
-
-                // 【可选优化】买过一次后，禁止重复购买
-                armorToggle.interactable = false;
-            }
-
-            if (shoesToggle.isOn)
-            {
-                // 走路增加 2，跑步增加 3，冲刺增加 5 (数值你可以自己改)
-                if (playerMovement != null) playerMovement.UpgradeSpeed(2f, 3f, 5f);
-                Debug.Log("获得了冲刺鞋！永久增加了移动速度。");
-
-                // 【可选优化】买过一次后，禁止重复购买
-                shoesToggle.interactable = false;
-            }
-
-            // 购买完成后重置勾选
-            ResetToggles();
-        }
-        else
-        {
-            Debug.Log("商店提示：穷鬼，点数不足！");
+            // 将数据传递给卡片自身进行初始化
+            cardUI.SetupCard(this, i, shopItems[i]);
+            spawnedCards.Add(cardUI);
         }
     }
 
+    // ==========================================
+    // 商店开关与玩家状态控制逻辑
+    // ==========================================
+
+    // 打开商店的方法（由场景里的桌子/触发器呼叫）
+    public void OpenShop()
+    {
+        shopPanel.SetActive(true);
+
+        // 1. 解锁并显示鼠标指针，以便点击商品
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+
+        if (playerMovement != null)
+        {
+            // 2. 停止玩家走路/跳跃/冲刺
+            playerMovement.canMove = false;
+
+            // 3. 【终极锁定法】：直接把 Cinemachine 读取鼠标输入的通道给掐断
+            if (playerMovement.freeLookCamera != null)
+            {
+                playerMovement.freeLookCamera.m_XAxis.m_InputAxisName = "";
+                playerMovement.freeLookCamera.m_YAxis.m_InputAxisName = "";
+                playerMovement.freeLookCamera.m_XAxis.m_InputAxisValue = 0;
+                playerMovement.freeLookCamera.m_YAxis.m_InputAxisValue = 0;
+            }
+        }
+    }
+
+    // 退出商店的方法（绑定给 UI 右上角的关闭按钮，或由 Esc 键触发）
     public void OnExitButtonClicked()
     {
         shopPanel.SetActive(false);
+
+        // 1. 锁定并隐藏鼠标指针
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
+
+        if (playerMovement != null)
+        {
+            // 2. 恢复玩家移动
+            playerMovement.canMove = true;
+
+            // 3. 【恢复输入】：把读取通道的名字还给 Cinemachine
+            if (playerMovement.freeLookCamera != null)
+            {
+                playerMovement.freeLookCamera.m_XAxis.m_InputAxisName = "Mouse X";
+                playerMovement.freeLookCamera.m_YAxis.m_InputAxisName = "Mouse Y";
+            }
+        }
     }
 
-    private void ResetToggles()
+    // ==========================================
+    // 购买与效果应用逻辑
+    // ==========================================
+
+    // 尝试购买商品（由 ShopItemUI 中的按钮点击后调用）
+    public void TryBuyItem(int index)
     {
-        breadToggle.isOn = false;
-        chickenToggle.isOn = false;
-        armorToggle.isOn = false;
-        shoesToggle.isOn = false;
+        ItemData item = shopItems[index];
+
+        if (playerPoints >= item.price)
+        {
+            // 扣钱与扣库存
+            playerPoints -= item.price;
+            item.maxQuantity--;
+
+            UpdatePointsDisplay();
+            ApplyItemEffect(item);
+
+            // 刷新该卡片的 UI（同步数量或变成售罄状态）
+            spawnedCards[index].SetupCard(this, index, item);
+        }
+        else
+        {
+            Debug.Log("提示：碎片不足，无法交换...");
+        }
+    }
+
+    // 执行物品的实际效果
+    private void ApplyItemEffect(ItemData item)
+    {
+        switch (item.effectType)
+        {
+            case ItemEffect.Heal:
+                if (playerHealth != null) playerHealth.Heal(item.effectValue);
+                Debug.Log($"吞下了{item.itemName}，恢复了{item.effectValue}点理智。");
+                break;
+
+            case ItemEffect.MaxHealthUp:
+                if (playerHealth != null) playerHealth.UpgradeMaxHealth(item.effectValue);
+                Debug.Log($"筑起心理防线，上限增加{item.effectValue}。");
+                break;
+
+            case ItemEffect.SpeedUp:
+                if (playerMovement != null) playerMovement.UpgradeSpeed(2f, 3f, 5f);
+                Debug.Log("逃避的本能被激发，移动速度提升。");
+                break;
+        }
     }
 }
