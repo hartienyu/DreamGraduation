@@ -1,4 +1,5 @@
 {
+  "nodeID": "Start",
   "dialogue": [
     {"speaker": "你", "content": "这是…在哪？"},
     {"speaker": "", "content": "是一种熟悉的感觉，在记忆深处，却无法触及。"},

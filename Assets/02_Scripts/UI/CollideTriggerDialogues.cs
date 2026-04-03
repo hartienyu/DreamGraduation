@@ -1,12 +1,14 @@
+using Cinemachine;
 using UnityEngine;
-using Cinemachine; // 必须引入
 
+// 此文件只控制对话碰撞箱
 public class CollideTriggerDialogues : MonoBehaviour
 {
+    // 在unity拖入object
     [Header("触发设置")]
     public bool triggerOnce = true;  // 是否只触发一次
     public string playerTag = "Player";
-    public GameObject nextColliderCube;  // 下一个对话的碰撞箱
+    public GameObject nextColliderCube;  // 下一个对话的碰撞箱，实现链式出现及销毁
     [Header("触发NPC出现/隐藏")]
     public GameObject NPC;  // 待触发行为的人物对象
 
@@ -16,7 +18,7 @@ public class CollideTriggerDialogues : MonoBehaviour
     [Tooltip("相机需要强制看向的物品 (拖入场景里的物品)")]
     public Transform itemToLookAt;
 
-    private bool isPlayerInTrigger = false;
+    private bool isPlayerInTriggerBox = false;
     private bool hasTriggered = false;
 
     // 缓存玩家的移动脚本和相机的原始状态
@@ -25,12 +27,12 @@ public class CollideTriggerDialogues : MonoBehaviour
     private string originalXAxisName;
     private string originalYAxisName;
 
-    // 属性：是否应该触发对话
-    public bool IsTriggerDialogue
+
+    public bool IsTriggerDialogue  // 告诉DialogueTrigger.cs是否触发对话
     {
         get
         {
-            return isPlayerInTrigger && (!triggerOnce || !hasTriggered);
+            return isPlayerInTriggerBox && (!triggerOnce || !hasTriggered);
         }
     }
 
@@ -38,7 +40,7 @@ public class CollideTriggerDialogues : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
-            isPlayerInTrigger = true;
+            isPlayerInTriggerBox = true;  // 玩家进入碰撞箱
             currentPlayer = other.GetComponent<PlayerMovement>(); // 获取玩家脚本
 
             if (NPC != null)
@@ -55,7 +57,7 @@ public class CollideTriggerDialogues : MonoBehaviour
 
             if (nextColliderCube != null)
             {
-                nextColliderCube.SetActive(true);  // 激活下一个对话
+                nextColliderCube.SetActive(true);  // 激活下一个对话碰撞箱
             }
             Debug.Log($"玩家进入 {gameObject.name} 的触发区域");
         }
@@ -65,7 +67,7 @@ public class CollideTriggerDialogues : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
-            isPlayerInTrigger = true;
+            isPlayerInTriggerBox = true;
         }
     }
 
@@ -73,7 +75,7 @@ public class CollideTriggerDialogues : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
-            isPlayerInTrigger = false;
+            isPlayerInTriggerBox = false;
             currentPlayer = null;
             gameObject.SetActive(false);  // 隐藏自己
             Debug.Log($"玩家离开 {gameObject.name} 的触发区域");

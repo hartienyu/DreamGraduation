@@ -1072,6 +1072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: da657d57334ba04449e966f621204cb5, type: 3}
+  nodeID: 0
 --- !u!114 &215750413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1810,6 +1811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 9bd93f185bd3a224c8cf44aafc74265a, type: 3}
+  nodeID: 0
 --- !u!114 &360392629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2863,6 +2865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 97d4a9182be555048b36c38181f47239, type: 3}
+  nodeID: 0
 --- !u!114 &472241177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8272,6 +8275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: d860d3b2b7c68f742960de165c9b0f9a, type: 3}
+  nodeID: 0
 --- !u!114 &1393660684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9756,6 +9760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 0}
+  nodeID: 0
 --- !u!4 &1635962529
 Transform:
   m_ObjectHideFlags: 0
@@ -10337,6 +10342,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 00a2b936eaf38264097213c6c84793cd, type: 3}
+  nodeID: 0
 --- !u!1 &1757073559
 GameObject:
   m_ObjectHideFlags: 0
@@ -11259,7 +11265,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce034902178525f4588e9f8045d4c302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueJSON: {fileID: 4900000, guid: d3772d887748c544e9760411fdf4dd48, type: 3}
+  dialogueJSON: {fileID: 4900000, guid: a0890c8008182944dbb488ee93ad8315, type: 3}
+  nodeID: 0
 --- !u!114 &1956443381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11876,6 +11883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 11b3d7bbbc72414448961c7e92216961, type: 3}
+  nodeID: 0
 --- !u!114 &2013075326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12252,6 +12260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 6fa62e4904d1a3840bc33b34446be9ff, type: 3}
+  nodeID: 0
 --- !u!114 &2126694370
 MonoBehaviour:
   m_ObjectHideFlags: 0

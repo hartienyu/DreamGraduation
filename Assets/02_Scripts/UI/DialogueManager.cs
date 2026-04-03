@@ -1,18 +1,21 @@
-﻿using System; // ===== 新增：引入System以使用Action =====
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+// 此文件实现对话功能逻辑
+
 [System.Serializable]
-public class NewDialogueLine
+public class NewDialogueLine  // 对话格式
 {
     public string speaker;
     public string content;
 }
 
 [System.Serializable]
-public class NewDialogueData
+public class NewDialogueData  // JSON文件读取后会自动按成员变量名赋值
 {
+    public string nodeID;
     public NewDialogueLine[] dialogue;
 }
 
@@ -29,7 +32,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI combinedText;
 
     private NewDialogueLine[] currentLines;
-    private int currentLineIndex = 0;
+    private int currentLineIndex = 0;  // 当前对话文件的行下标
     private bool isTalking = false;
 
     // 用于记住当前是哪个触发器开启的对话
@@ -43,18 +46,19 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
+        // 玩家按下enter键跳下一行对话文本
         if (isTalking && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
         {
             ShowNextLine();
         }
     }
 
-    public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues trigger = null)
+    public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues triggerBox = null)
     {
         if (isTalking || jsonFile == null) return;
 
         // 记录传过来的触发器
-        activeTrigger = trigger;
+        activeTrigger = triggerBox;
 
         // ========== 新增：记录当前正在进行的对话名称 ==========
         currentDialogueName = jsonFile.name;
@@ -64,8 +68,8 @@ public class DialogueManager : MonoBehaviour
 
         if (data != null && data.dialogue != null && data.dialogue.Length > 0)
         {
-            currentLines = data.dialogue;
-            currentLineIndex = 0;
+            currentLines = data.dialogue;  // 一开始就存入整个dialogue内容
+            currentLineIndex = 0;  // 当前对话文件的行下标
             isTalking = true;
             dialogueUI.SetActive(true);
             ShowNextLine();
@@ -80,13 +84,14 @@ public class DialogueManager : MonoBehaviour
 
     private void ShowNextLine()
     {
+        // 如果一个对话json文件的内容读完了
         if (currentLineIndex >= currentLines.Length)
         {
             EndDialogue();
             return;
         }
 
-        NewDialogueLine line = currentLines[currentLineIndex];
+        NewDialogueLine line = currentLines[currentLineIndex];  //当前行内容
 
         if (string.IsNullOrEmpty(line.speaker))
         {
