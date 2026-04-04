@@ -123,6 +123,12 @@ public class DialogueTrigger : MonoBehaviour
                 Debug.LogError("找不到 QuestManager 实例！");
             }
 
+            // 在Huahuo3结束后开启20分钟(1200秒)的倒计时
+            if (CountdownTimer.Instance != null)
+            {
+                CountdownTimer.Instance.StartCountdown(1200f);
+            }
+
             // 任务触发后注销事件，避免重复触发或内存泄漏
             if (DialogueManager.Instance != null)
             {
