@@ -12493,6 +12493,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2013531242}
+  - component: {fileID: 2013531246}
   - component: {fileID: 2013531243}
   - component: {fileID: 2013531244}
   - component: {fileID: 2013531245}
@@ -12571,6 +12572,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prerequisiteDialogueName: Task1.2
   objectToUnlock: {fileID: 1298165824}
+--- !u!114 &2013531246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013531241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06639c42ef068b64d90881d8c850f9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2037434737
 GameObject:
   m_ObjectHideFlags: 0
