@@ -24,7 +24,13 @@ public enum DialogueNode
     Task1_2,
     Task1_3,
     Task1_4,
-    Task1_5
+    Task1_5,
+    Task2_Start,
+    Task2_TearPaper,
+    Task2_KeepPaper,
+    Task2_Complete_A,
+    Task2_Complete_B,
+    Task2_BadEnding
 }
 
 // 存档数据结构（可序列化，用于存储）

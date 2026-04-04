@@ -1,0 +1,15 @@
+{
+  "nodeID": "Task2_BadEnding",
+  "dialogue": [
+    {"speaker": "霸凌者", "content": "你为什么… 要帮她？"},
+    {"speaker": "霸凌者", "content": "她骗你的。"},
+    {"speaker": "霸凌者", "content": "她只是… 在利用你。"},
+    {"speaker": "霸凌者", "content": "就像… 利用之前那些人一样。"},
+    {"speaker": "", "content": "【动作】你转过头看，发现花火站在你身后，她张了张嘴，想说什么，但什么都没说出来。"},
+    {"speaker": "霸凌者", "content": "你以为… 她是什么好人？"},
+    {"speaker": "霸凌者", "content": "你以为… 她是“无辜”的？"},
+    {"speaker": "霸凌者", "content": "她只是… 没有告诉你… 全部的故事。"},
+    {"speaker": "", "content": "【动作】你感觉到自己的意识在模糊，最后一切变得黑暗。（身体变透明）"},
+    {"speaker": "", "content": "【系统提示】任务失败！"}
+  ]
+}

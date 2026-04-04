@@ -77,7 +77,7 @@ public class CollideTriggerDialogues : MonoBehaviour
         {
             isPlayerInTriggerBox = false;
             currentPlayer = null;
-            gameObject.SetActive(false);  // 隐藏自己
+            // gameObject.SetActive(false);  // 隐藏自己 -> 注释掉，防止把挂载的实体物品（如垃圾桶）直接隐藏掉
             Debug.Log($"玩家离开 {gameObject.name} 的触发区域");
         }
     }

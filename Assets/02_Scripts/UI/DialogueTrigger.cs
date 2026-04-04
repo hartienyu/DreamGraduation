@@ -8,6 +8,10 @@ public class DialogueTrigger : MonoBehaviour
     [Tooltip("直接拖入对应的对话JSON文件")]
     public TextAsset dialogueJSON;
 
+    [Header("触发后要关闭的提示光/物体（可选）")]
+    [Tooltip("比如发光的Point Light，对话开始后就会自动隐藏")]
+    public GameObject objectToDisableOnTrigger;
+
     private CollideTriggerDialogues triggerDialoguesBox;
     private bool dialogueTriggered = false;
 
@@ -92,6 +96,12 @@ public class DialogueTrigger : MonoBehaviour
             // 开启对话
             DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialoguesBox);
             dialogueTriggered = true;
+
+            // 触发后隐藏指定的发光物体或提示
+            if (objectToDisableOnTrigger != null)
+            {
+                objectToDisableOnTrigger.SetActive(false);
+            }
 
             // 通知触发器对话已触发 (锁定玩家和视角)
             if (triggerDialoguesBox != null)

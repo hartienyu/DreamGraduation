@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 // 此文件实现对话功能逻辑
 
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 public class DialogueOption
 {
     public string optionText;      // 选项显示的文字
-    public string nextFileToLoad;  // 选择后加载的下一个剧情文件名称(无后缀)，需放在 Resources/Dialogues 目录下
+    public string nextFileToLoad;  // 选择后加载的下一个剧情文件名称(无后缀)
 }
 
 [System.Serializable]
@@ -44,10 +45,18 @@ public class DialogueManager : MonoBehaviour
     public GameObject optionsContainer; // 一个容纳按钮的空物体(建议挂载 Vertical Layout Group)
     public GameObject optionButtonPrefab; // 带有Button组件和Text(TMP)组件的预制体
 
+    [Header("分支剧情文件库")]
+    [Tooltip("把你所有可能作为分支读进去的JSON文件都拖这里面统一管理")]
+    public List<TextAsset> branchDialogues = new List<TextAsset>();
+
     private NewDialogueLine[] currentLines;
     private int currentLineIndex = 0;  // 当前对话文件的行下标
     private bool isTalking = false;
     private bool isWaitingForOption = false;
+
+    // 添加列表以记录生成的按钮，用于键盘控制
+    private List<Button> activeOptionButtons = new List<Button>();
+    private int currentOptionIndex = 0;
 
     // 用于记住当前是哪个触发器开启的对话
     private CollideTriggerDialogues activeTrigger;
@@ -65,8 +74,29 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        // 只有在对话中且不是在等待选择选项时，才可以按下确定键继续
-        if (isTalking && !isWaitingForOption && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+        if (isWaitingForOption && activeOptionButtons.Count > 0)
+        {
+            // 通过上/W 和 下/S 键进行选项导航
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            {
+                currentOptionIndex--;
+                if (currentOptionIndex < 0) currentOptionIndex = activeOptionButtons.Count - 1;
+                activeOptionButtons[currentOptionIndex].Select();
+                
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            {
+                currentOptionIndex++;
+                if (currentOptionIndex >= activeOptionButtons.Count) currentOptionIndex = 0;
+                activeOptionButtons[currentOptionIndex].Select();
+            }
+            // F键 确认当前选中的选项
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                activeOptionButtons[currentOptionIndex].onClick.Invoke();
+            }
+        }
+        else if (isTalking && !isWaitingForOption && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.F)))
         {
             ShowNextLine();
         }
@@ -114,11 +144,11 @@ public class DialogueManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(line.speaker))
         {
-            combinedText.text = "{line.content}";  // Thinking...
+            combinedText.text = $"{line.content}";  // Thinking...
         }
         else
         {
-            combinedText.text = "<b><color=#FFD700>[{line.speaker}]</color></b>\n{line.content}";  // Speaking...
+            combinedText.text = $"<b><color=#FFD700>[{line.speaker}]</color></b>\n{line.content}";  // Speaking...
         }
 
         currentLineIndex++;
@@ -132,6 +162,7 @@ public class DialogueManager : MonoBehaviour
             // 清空旧的按钮
             if (optionsContainer != null)
             {
+                activeOptionButtons.Clear();
                 foreach (Transform child in optionsContainer.transform) 
                 {
                     Destroy(child.gameObject);
@@ -145,10 +176,20 @@ public class DialogueManager : MonoBehaviour
                     
                     string nextFileForBtn = opt.nextFileToLoad;
 
-                    btnObj.GetComponent<Button>().onClick.AddListener(() => 
+                    Button btn = btnObj.GetComponent<Button>();
+                    activeOptionButtons.Add(btn);
+                    
+                    btn.onClick.AddListener(() => 
                     {
                         OnOptionClicked(nextFileForBtn);
                     });
+                }
+
+                // 默认强制选中第一个按钮
+                if (activeOptionButtons.Count > 0)
+                {
+                    currentOptionIndex = 0;
+                    activeOptionButtons[0].Select();
                 }
             }
             else
@@ -162,6 +203,7 @@ public class DialogueManager : MonoBehaviour
     private void OnOptionClicked(string nextFile)
     {
         isWaitingForOption = false;
+        activeOptionButtons.Clear();
 
         // 隐藏并清空选项容器
         if (optionsContainer != null) 
@@ -176,7 +218,9 @@ public class DialogueManager : MonoBehaviour
         // 如果配置了下一个剧情文件，加载它，产生故事分支
         if (!string.IsNullOrEmpty(nextFile))
         {
-            TextAsset newJson = Resources.Load<TextAsset>("Dialogues/" + nextFile);
+            // 从设定的分支列表中查找对应名字的 JSON 剧本
+            TextAsset newJson = branchDialogues.Find(x => x != null && x.name == nextFile);
+            
             if (newJson != null)
             {
                 // 先将标志位置否以让它能重新Start
@@ -185,7 +229,7 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"无法在 Resources/Dialogues/ 文件夹下找到剧情文件: {nextFile}");
+                Debug.LogError($"无法在 branchDialogues 列表中找到剧情文件: {nextFile}，你是不是忘拖进去了？");
                 EndDialogue(); // 找不到就结束对话
             }
         }
