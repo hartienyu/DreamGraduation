@@ -7,6 +7,8 @@ public class CollideTriggerDialogues : MonoBehaviour
     // 在unity拖入object
     [Header("触发设置")]
     public bool triggerOnce = true;  // 是否只触发一次
+    public bool hideOnExit = true;   // 对话结束后/离开时是否隐藏自身（例如隐形碰撞方块应该隐藏，实体如垃圾桶则不隐藏）
+
     public string playerTag = "Player";
     public GameObject nextColliderCube;  // 下一个对话的碰撞箱，实现链式出现及销毁
     [Header("触发NPC出现/隐藏")]
@@ -43,22 +45,26 @@ public class CollideTriggerDialogues : MonoBehaviour
             isPlayerInTriggerBox = true;  // 玩家进入碰撞箱
             currentPlayer = other.GetComponent<PlayerMovement>(); // 获取玩家脚本
 
-            if (NPC != null)
+            if (!triggerOnce || !hasTriggered)
             {
-                if (NPC.activeSelf)
+                if (NPC != null)
                 {
-                    NPC.SetActive(false);  // 让火花（鬼魂）先消失
+                    if (NPC.activeSelf)
+                    {
+                        NPC.SetActive(false);  // 让火花（鬼魂）先消失
+                    }
+                    else
+                    {
+                        NPC.SetActive(true);
+                    }
                 }
-                else
+
+                if (nextColliderCube != null)
                 {
-                    NPC.SetActive(true);
+                    nextColliderCube.SetActive(true);  // 激活下一个对话碰撞箱
                 }
             }
 
-            if (nextColliderCube != null)
-            {
-                nextColliderCube.SetActive(true);  // 激活下一个对话碰撞箱
-            }
             Debug.Log($"玩家进入 {gameObject.name} 的触发区域");
         }
     }
@@ -77,8 +83,17 @@ public class CollideTriggerDialogues : MonoBehaviour
         {
             isPlayerInTriggerBox = false;
             currentPlayer = null;
-            // gameObject.SetActive(false);  // 隐藏自己 -> 注释掉，防止把挂载的实体物品（如垃圾桶）直接隐藏掉
-            Debug.Log($"玩家离开 {gameObject.name} 的触发区域");
+            
+            // 通过开关控制是否隐藏自身（隐形触发器一般勾选，实体如垃圾桶则取消勾选）
+            if (hideOnExit)
+            {
+                gameObject.SetActive(false);  
+                Debug.Log($"玩家离开 {gameObject.name} 的触发区域并隐藏自身");
+            }
+            else
+            {
+                Debug.Log($"玩家离开 {gameObject.name} 的触发区域，保留自身显示");
+            }
         }
     }
 
