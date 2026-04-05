@@ -72,13 +72,11 @@ public class EventTester : MonoBehaviour
         if (dialogueName == "Task2_BranchA_TearPaper")
         {
             isPaperTorn = true;
-            // ShowSplash("警告：霸凌者即将出现！");  // —— 根据要求取消结束时直接弹警告，改为由 CountdownTimer 倒计时触发
         }
         // 2. 玩家选择了保留画纸的反馈剧情结束了
         else if (dialogueName == "Task2_BranchB_KeepPaper")
         {
             isPaperTorn = false;
-            // ShowSplash("警告：霸凌者即将出现！");  // —— 同上取消
         }
         // 3. 玩家被抓到了 (BadEnding结束)
         else if (dialogueName == "Global_BadEnding")
