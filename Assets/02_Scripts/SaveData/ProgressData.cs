@@ -40,4 +40,5 @@ public class SaveData  //游戏所有需要存档的数据
     public ProgressLevel currentLevel;       // 当前所在等级
     public DialogueNode lastCompletedNode;   // 最后完成的对话节点
     public bool isLevel1Completed;           // 第一等级是否完成
+    public Vector3 lastPlayerPosition;       // 玩家最后位置（这里用碰撞箱位置）
 }

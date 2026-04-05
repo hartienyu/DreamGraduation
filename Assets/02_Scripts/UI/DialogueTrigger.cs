@@ -1,7 +1,7 @@
 ﻿using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-// 此文件真正实现进入碰撞箱后链接JSON文件并弹出对话内容
+// 此文件绑在碰撞箱，真正实现进入碰撞箱后链接JSON文件并弹出对话内容
 public class DialogueTrigger : MonoBehaviour
 {
     [Header("对话JSON文件")]
@@ -56,10 +56,10 @@ public class DialogueTrigger : MonoBehaviour
                         nodeID = (DialogueNode)System.Enum.Parse(typeof(DialogueNode), data.nodeID, true);
                         Debug.Log($"成功转换: {nodeID}");
 
-                        // ========== 修复：确保 progressManager 不为空再调用 ==========
+                        // ========== 确保 progressManager 不为空再调用 ==========
                         if (progressManager != null)
                         {
-                            progressManager.UpdateProgress(nodeID);
+                            progressManager.UpdateProgress(nodeID, triggerDialoguesBox.transform.position);  // 更新进度（保存当前节点、玩家所在碰撞箱位置）
                         }
                         else
                         {

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.MPE;
 using UnityEngine;
 
 public class ProgressManager : MonoBehaviour
@@ -27,14 +26,15 @@ public class ProgressManager : MonoBehaviour
     }
 
     // 更新进度（触发对话后调用）
-    public void UpdateProgress(DialogueNode completedNode)
+    public void UpdateProgress(DialogueNode completedNode, Vector3 position)
     {
         currentSaveData.lastCompletedNode = completedNode;
         currentSaveData.currentLevel = GetNodeLevel(completedNode);
         currentSaveData.isLevel1Completed = IsLevel1Completed(completedNode);
+        currentSaveData.lastPlayerPosition = position;
 
         // ========== 添加调试日志 ==========
-        Debug.Log($"保存进度 - 节点: {completedNode}, 等级: {currentSaveData.currentLevel}, Level1完成: {currentSaveData.isLevel1Completed}");
+        Debug.Log($"保存进度 - 节点: {completedNode}, 等级: {currentSaveData.currentLevel}, Level1完成: {currentSaveData.isLevel1Completed}，当前位置：{currentSaveData.lastPlayerPosition}");
 
         // 自动存档
         SaveProgress();
@@ -69,7 +69,8 @@ public class ProgressManager : MonoBehaviour
             {
                 currentLevel = ProgressLevel.Level1,
                 lastCompletedNode = DialogueNode.Start,
-                isLevel1Completed = false
+                isLevel1Completed = false,
+                lastPlayerPosition = new Vector3(-15.166f, -1.276f, -3.983f)  // 玩家初始位置（固定）
             };
 
             // ========== 添加调试日志 ==========
@@ -95,10 +96,11 @@ public class ProgressManager : MonoBehaviour
 
 
     // 判断当前对话节点属于哪个等级
-    private ProgressLevel GetNodeLevel(DialogueNode node)
+    public ProgressLevel GetNodeLevel(DialogueNode node)
     {
         switch (node)
         {
+            // Level1 节点
             case DialogueNode.Start:
             case DialogueNode.Stadium:
             case DialogueNode.Corridor:
@@ -113,14 +115,22 @@ public class ProgressManager : MonoBehaviour
             case DialogueNode.Task1_5:
                 return ProgressLevel.Level1;
 
-            //    return ProgressLevel.Level2;
+            // Level2 节点（补全）
+            case DialogueNode.Task2_Start:
+            case DialogueNode.Task2_TearPaper:
+            case DialogueNode.Task2_KeepPaper:
+            case DialogueNode.Task2_Complete_A:
+            case DialogueNode.Task2_Complete_B:
+            case DialogueNode.Task2_BadEnding:
+                return ProgressLevel.Level2;
 
             default:
+                Debug.LogWarning($"未识别的节点: {node}，默认返回 Level1");
                 return ProgressLevel.Level1;
         }
     }
 
-    // ========== 修复：判断第一等级是否完成（以Huahuo3为终点） ==========
+    // ========== 判断第一等级是否完成（以Huahuo3为终点） ==========
     private bool IsLevel1Completed(DialogueNode lastNode)
     {
         // 根据你的需求：只要Huahuo3对话结束就完成任务

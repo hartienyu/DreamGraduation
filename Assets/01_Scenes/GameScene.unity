@@ -1055,7 +1055,7 @@ GameObject:
   - component: {fileID: 215750412}
   m_Layer: 0
   m_Name: DialogueCube_Huahuo1
-  m_TagString: DialogueCube
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1074,7 +1074,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: da657d57334ba04449e966f621204cb5, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 5
 --- !u!114 &215750413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1796,7 +1796,7 @@ GameObject:
   - component: {fileID: 360392628}
   m_Layer: 0
   m_Name: DialogueCube_ClassroomDoor
-  m_TagString: DialogueCube
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1815,7 +1815,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 9bd93f185bd3a224c8cf44aafc74265a, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 4
 --- !u!114 &360392629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2851,8 +2851,8 @@ GameObject:
   - component: {fileID: 472241177}
   - component: {fileID: 472241176}
   m_Layer: 0
-  m_Name: DialogueCube_Corrider
-  m_TagString: DialogueCube
+  m_Name: DialogueCube_Corridor
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2871,7 +2871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 97d4a9182be555048b36c38181f47239, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 3
 --- !u!114 &472241177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6421,7 +6421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.017751455
+      value: 0.0414
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8697,7 +8697,7 @@ GameObject:
   - component: {fileID: 1393660683}
   m_Layer: 0
   m_Name: DialogueCube_Staircase
-  m_TagString: DialogueCube
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8716,7 +8716,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: d860d3b2b7c68f742960de165c9b0f9a, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 2
 --- !u!114 &1393660684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10710,7 +10710,7 @@ GameObject:
   - component: {fileID: 1755805265}
   m_Layer: 0
   m_Name: DialogueCube_Stadium
-  m_TagString: DialogueCube
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10834,7 +10834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 00a2b936eaf38264097213c6c84793cd, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 1
 --- !u!1 &1757073559
 GameObject:
   m_ObjectHideFlags: 0
@@ -11739,8 +11739,8 @@ GameObject:
   - component: {fileID: 1956443381}
   - component: {fileID: 1956443380}
   m_Layer: 0
-  m_Name: DialogueCube_Task2
-  m_TagString: DialogueCube
+  m_Name: DialogueCube_Task1_2
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11759,7 +11759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: a0890c8008182944dbb488ee93ad8315, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 8
 --- !u!114 &1956443381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12358,12 +12358,12 @@ GameObject:
   - component: {fileID: 2013075326}
   - component: {fileID: 2013075325}
   m_Layer: 0
-  m_Name: DialogueCube_Init
-  m_TagString: DialogueCube
+  m_Name: DialogueCube_Start
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2013075325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12494,6 +12494,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2013531242}
   - component: {fileID: 2013531246}
+  - component: {fileID: 2013531247}
   - component: {fileID: 2013531243}
   - component: {fileID: 2013531244}
   - component: {fileID: 2013531245}
@@ -12582,6 +12583,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06639c42ef068b64d90881d8c850f9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2013531247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013531241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca9ffe99c9c9bb4bb64c61998186a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2037434737
@@ -12777,7 +12790,7 @@ GameObject:
   - component: {fileID: 2126694369}
   m_Layer: 0
   m_Name: DialogueCube_Huahuo3
-  m_TagString: DialogueCube
+  m_TagString: Level1Dialogue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12796,7 +12809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueJSON: {fileID: 4900000, guid: 6fa62e4904d1a3840bc33b34446be9ff, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
-  nodeID: 0
+  nodeID: 6
 --- !u!114 &2126694370
 MonoBehaviour:
   m_ObjectHideFlags: 0
