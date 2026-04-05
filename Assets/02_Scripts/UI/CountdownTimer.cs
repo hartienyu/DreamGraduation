@@ -10,6 +10,7 @@ public class CountdownTimer : MonoBehaviour
 
     private float currentTime;
     private bool isCountingDown = false;
+    private bool hasTriggered5MinSplash = false;
 
     private void Awake()
     {
@@ -30,6 +31,16 @@ public class CountdownTimer : MonoBehaviour
             // Time.deltaTime 是上一帧到这一帧经过的时间（秒）
             currentTime -= Time.deltaTime;
 
+            if (currentTime <= 300f && !hasTriggered5MinSplash)
+            {
+                // 当倒计时小于等于300秒（5分钟），触发一次警告
+                hasTriggered5MinSplash = true;
+                if (EventTester.Instance != null)
+                {
+                    EventTester.Instance.ShowSplash("警告：他们来了！");
+                }
+            }
+
             if (currentTime <= 0)
             {
                 currentTime = 0;
@@ -49,7 +60,27 @@ public class CountdownTimer : MonoBehaviour
     {
         currentTime = durationInSeconds; // 这里我们将会传 1200f (20分钟)
         isCountingDown = true;
+        hasTriggered5MinSplash = false; // 重置此警告旗标
         timerText.gameObject.SetActive(true); // 显示倒计时文本
+    }
+
+    // 开放给外部调用的加减时间方法（用于测试或奖惩）
+    public void AdjustTime(float seconds)
+    {
+        if (!isCountingDown) return;
+        
+        currentTime += seconds;
+        
+        // 防止时间被减到负数出现逻辑错误
+        if (currentTime < 0) currentTime = 0.1f;
+        
+        // 如果把时间加到了大于5分钟，重置5分钟的警告旗帜，允许再次触发
+        if (currentTime > 300f)
+        {
+            hasTriggered5MinSplash = false;
+        }
+
+        Debug.Log($"倒计时时间已调整，增减 {seconds} 秒，当前剩余 {currentTime} 秒。");
     }
 
     // 倒计时结束时执行的逻辑

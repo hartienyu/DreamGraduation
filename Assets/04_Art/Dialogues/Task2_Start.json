@@ -1,4 +1,4 @@
-{
+﻿{
   "nodeID": "Task2_Start",
   "dialogue": [
     {"speaker": "", "content": "【系统提示】解锁羁绊等级2。任务2：教室后方的垃圾桶。"},
@@ -7,15 +7,15 @@
     {"speaker": "", "content": "花火走到你身旁，看着那张画。"},
     {
       "speaker": "花火（鬼魂）", 
-      "content": "这是他们眼里的我。… 画得还挺像的，对吧？",
+      "content": "这是他们眼里的我。 画得还挺像的，对吧？",
       "options": [
         {
           "optionText": "把画撕碎。",
-          "nextFileToLoad": "Task2_TearPaper"
+          "nextFileToLoad": "Task2_BranchA_TearPaper"
         },
         {
           "optionText": "这不是你。",
-          "nextFileToLoad": "Task2_KeepPaper"
+          "nextFileToLoad": "Task2_BranchB_KeepPaper"
         }
       ]
     }

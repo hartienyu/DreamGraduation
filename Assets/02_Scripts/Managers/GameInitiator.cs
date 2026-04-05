@@ -20,8 +20,15 @@ public class GameInitiator : MonoBehaviour
 
         Debug.Log($"加载游戏进度 - 上次节点: {saveData.lastCompletedNode}, 等级: {saveData.currentLevel}, Level1完成: {saveData.isLevel1Completed}，玩家上次位置：{saveData.lastPlayerPosition}");
 
-        // 直接先更新玩家位置
-        player.transform.position = saveData.lastPlayerPosition;
+        // 如果不是新游戏（位置不是 Vector3.zero），才更新玩家位置
+        if (saveData.lastPlayerPosition != Vector3.zero)
+        {
+            player.transform.position = saveData.lastPlayerPosition;
+        }
+        else
+        {
+            Debug.Log("新游戏（未建立新坐标），保留玩家在场景中布置的初始位置。");
+        }
 
         // 禁用所有比当前等级低的关卡节点
         DeactivateAllPreviousLevels(saveData.currentLevel);
@@ -80,7 +87,7 @@ public class GameInitiator : MonoBehaviour
             case DialogueNode.Task1_5:
                 return DialogueNode.Task2_Start;
             case DialogueNode.Task2_Start:
-                return DialogueNode.Task2_TearPaper;
+                return DialogueNode.Task2_BranchA_TearPaper;
             // 添加更多...
             default:
                 // 如果已经是最后一个节点，返回自身（没有下一个）

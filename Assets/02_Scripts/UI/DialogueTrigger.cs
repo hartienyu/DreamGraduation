@@ -12,6 +12,10 @@ public class DialogueTrigger : MonoBehaviour
     [Tooltip("比如发光的Point Light，对话开始后就会自动隐藏")]
     public GameObject objectToDisableOnTrigger;
 
+    [Header("该剧情的分支文件（如果有选项）")]
+    [Tooltip("如果该剧情存在分歧选项，将所有选项导向的JSON剧本拖入此列表即可")]
+    public System.Collections.Generic.List<TextAsset> branchDialogues;
+
     private CollideTriggerDialogues triggerDialoguesBox;
     private bool dialogueTriggered = false;
 
@@ -93,8 +97,8 @@ public class DialogueTrigger : MonoBehaviour
                 DialogueManager.Instance.OnDialogueFinished += OnDialogueFinishedHandler;
             }
 
-            // 开启对话
-            DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialoguesBox);
+            // 开启对话，将自身配置的 branchDialogues 传给 DialogueManager
+            DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialoguesBox, branchDialogues);
             dialogueTriggered = true;
 
             // 触发后隐藏指定的发光物体或提示

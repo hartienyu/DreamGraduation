@@ -13,6 +13,9 @@ public class QuestManager : MonoBehaviour
     public bool isQuestActive { get; private set; } = false;
 
     [Header("Quest Events")]
+    // 事件：专门为代码监听用的任务开始事件
+    public System.Action onQuestStartedEvent;
+
     // We use UnityEvents so we can easily connect UI updates in the Inspector or via code
     public UnityEvent OnQuestStarted;
     public UnityEvent<int, int> OnItemCollected;
@@ -36,10 +39,13 @@ public class QuestManager : MonoBehaviour
 
     public void StartQuest()
     {
+        if (isQuestActive) return; // Prevent multiple start calls
+
         isQuestActive = true;
         currentItemsFound = 0;
 
         Debug.Log("Quest Started: Find the items.");
+        onQuestStartedEvent?.Invoke(); // 通知所有的 InteractableItem 亮光
         OnQuestStarted?.Invoke(); // Trigger UI update
     }
 

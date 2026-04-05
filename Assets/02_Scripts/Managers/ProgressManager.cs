@@ -70,7 +70,7 @@ public class ProgressManager : MonoBehaviour
                 currentLevel = ProgressLevel.Level1,
                 lastCompletedNode = DialogueNode.Start,
                 isLevel1Completed = false,
-                lastPlayerPosition = new Vector3(-15.166f, -1.276f, -3.983f)  // 玩家初始位置（固定）
+                lastPlayerPosition = Vector3.zero // 我们在 GameInitiator 里判断如果是 zero 就不强制移动玩家
             };
 
             // ========== 添加调试日志 ==========
@@ -117,11 +117,13 @@ public class ProgressManager : MonoBehaviour
 
             // Level2 节点（补全）
             case DialogueNode.Task2_Start:
-            case DialogueNode.Task2_TearPaper:
-            case DialogueNode.Task2_KeepPaper:
-            case DialogueNode.Task2_Complete_A:
-            case DialogueNode.Task2_Complete_B:
-            case DialogueNode.Task2_BadEnding:
+            case DialogueNode.Task2_BranchA_TearPaper:
+            case DialogueNode.Task2_BranchB_KeepPaper:
+            case DialogueNode.Global_BullyApproach:
+            case DialogueNode.Global_BullyLeave:
+            case DialogueNode.Global_BullySpot:
+            case DialogueNode.Global_BullySpotLeave:
+            case DialogueNode.Global_BadEnding:
                 return ProgressLevel.Level2;
 
             default:

@@ -45,9 +45,8 @@ public class DialogueManager : MonoBehaviour
     public GameObject optionsContainer; // 一个容纳按钮的空物体(建议挂载 Vertical Layout Group)
     public GameObject optionButtonPrefab; // 带有Button组件和Text(TMP)组件的预制体
 
-    [Header("分支剧情文件库")]
-    [Tooltip("把你所有可能作为分支读进去的JSON文件都拖这里面统一管理")]
-    public List<TextAsset> branchDialogues = new List<TextAsset>();
+    // 该对话的分支文件暂存
+    private List<TextAsset> currentBranchDialogues;
 
     private NewDialogueLine[] currentLines;
     private int currentLineIndex = 0;  // 当前对话文件的行下标
@@ -60,6 +59,9 @@ public class DialogueManager : MonoBehaviour
 
     // 用于记住当前是哪个触发器开启的对话
     private CollideTriggerDialogues activeTrigger;
+
+    // 防止同帧按F触发剧情并直接跳过对话
+    private bool justStartedDialogue = false;
 
     private void Awake()
     {
@@ -96,18 +98,29 @@ public class DialogueManager : MonoBehaviour
                 activeOptionButtons[currentOptionIndex].onClick.Invoke();
             }
         }
-        else if (isTalking && !isWaitingForOption && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.F)))
+        else if (isTalking && !isWaitingForOption && !justStartedDialogue && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.F)))
         {
             ShowNextLine();
         }
     }
 
-    public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues triggerBox = null)
+    private void LateUpdate()
+    {
+        justStartedDialogue = false;
+    }
+
+    public void StartDialogue(TextAsset jsonFile, CollideTriggerDialogues triggerBox = null, List<TextAsset> branches = null)
     {
         if (isTalking || jsonFile == null) return;
 
+        // 防止立刻跳过
+        justStartedDialogue = true;
+
         // 记录传过来的触发器
         activeTrigger = triggerBox;
+        
+        // 记录传过来的分支字典
+        currentBranchDialogues = branches;
 
         // ========== 新增：记录当前正在进行的对话名称 ==========
         currentDialogueName = jsonFile.name;
@@ -219,17 +232,18 @@ public class DialogueManager : MonoBehaviour
         if (!string.IsNullOrEmpty(nextFile))
         {
             // 从设定的分支列表中查找对应名字的 JSON 剧本
-            TextAsset newJson = branchDialogues.Find(x => x != null && x.name == nextFile);
+            TextAsset newJson = currentBranchDialogues?.Find(x => x != null && x.name == nextFile);
             
             if (newJson != null)
             {
                 // 先将标志位置否以让它能重新Start
                 isTalking = false; 
-                StartDialogue(newJson, activeTrigger);
+                // 继续接力传递当前的分支列表
+                StartDialogue(newJson, activeTrigger, currentBranchDialogues);
             }
             else
             {
-                Debug.LogError($"无法在 branchDialogues 列表中找到剧情文件: {nextFile}，你是不是忘拖进去了？");
+                Debug.LogError($"无法在分支剧情文件列表中找到名称为 [{nextFile}] 的剧情文件！请检查是不是忘记把 {nextFile}.json 拖入 DialogueTrigger 的 Branch Dialogues 列表里了。");
                 EndDialogue(); // 找不到就结束对话
             }
         }
