@@ -91,10 +91,11 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            // ========== 新增：如果是 Huahuo3 剧情，先订阅对话结束的事件 ==========
+            // ========== 如果是 Huahuo3 剧情，触发任务开始 ==========
             if (dialogueJSON.name == "Huahuo3")
             {
-                DialogueManager.Instance.OnDialogueFinished += OnDialogueFinishedHandler;
+                // 当开始播放 Huahuo3 对话时，先注册一个“对话结束”的事件监听，当对话结束后触发任务开始
+                DialogueManager.Instance.OnDialogueFinished += QuestManager.Instance.OnDialogueFinishedHandler;
             }
 
             // 开启对话，将自身配置的 branchDialogues 传给 DialogueManager
@@ -121,36 +122,6 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
-    // ========== 新增：当监听到任意对话结束时触发 ==========
-    private void OnDialogueFinishedHandler(string finishedDialogueName)
-    {
-        // 确认结束的确实是 Huahuo3
-        if (finishedDialogueName == "Huahuo3")
-        {
-            if (QuestManager.Instance != null)
-            {
-                QuestManager.Instance.StartQuest();
-                Debug.Log("Huahuo3 对话已完全结束，任务正式开启！");
-            }
-            else
-            {
-                Debug.LogError("找不到 QuestManager 实例！");
-            }
-
-            // 在Huahuo3结束后开启20分钟(1200秒)的倒计时
-            if (CountdownTimer.Instance != null)
-            {
-                CountdownTimer.Instance.StartCountdown(1200f);
-            }
-
-            // 任务触发后注销事件，避免重复触发或内存泄漏
-            if (DialogueManager.Instance != null)
-            {
-                DialogueManager.Instance.OnDialogueFinished -= OnDialogueFinishedHandler;
-            }
-        }
-    }
-
     public void ResetTrigger()
     {
         dialogueTriggered = false;
@@ -161,7 +132,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.OnDialogueFinished -= OnDialogueFinishedHandler;
+            DialogueManager.Instance.OnDialogueFinished -= QuestManager.Instance.OnDialogueFinishedHandler;
         }
     }
 }

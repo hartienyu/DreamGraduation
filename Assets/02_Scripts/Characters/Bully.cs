@@ -12,16 +12,10 @@ public class Bully : MonoBehaviour
 
     public float Hp = 100;  // 敌人生命值
     public float Speed = 3;  // 敌人移动速度
-    public float warningDis = 15;  // 警戒距离
+    public float warningDis = 5;  // 警戒距离
     public float attackDis = 2;  // 攻击距离
 
-    [Header("碰撞设置")]
-    public float turnSpeed = 5f;          // 转向速度
-    public float rayDistance = 2f;        // 射线检测距离
-
-    private Rigidbody rb;
-    private bool isTurning = false;
-    private float targetAngle;
+    private float viewAngle = 120;  // Bully视野范围
 
     // Start is called before the first frame update
     void Start()
@@ -39,21 +33,29 @@ public class Bully : MonoBehaviour
             {
                 // Debug.Log("Run after player!");
 
-                // transform.LookAt(Player.transform);  // 反应过快，不适合人物
-                Vector3 player = new Vector3(Player.transform.position.x, 0, Player.transform.position.z);
-                Vector3 self = new Vector3(this.transform.position.x, 0, this.transform.position.z);
-                transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(player - self), 0.02f);
-                // 从起始向量 this.transform.rotation 旋转到目标向量 player - self，（Quaternion.LookRotation 让物体旋转到目标向量）
+                Vector3 dir = Player.transform.position - this.transform.position;
+                float angle = Vector3.Angle(dir, this.transform.forward);
+                if (angle <= viewAngle / 2)  // 玩家在视野范围内
+                {
+                    // Debug.Log("Discover player!");
 
-                if (dis <= attackDis)
-                {
-                    // Debug.Log("Attack the player!");
-                    PlayerAnimation("IsAttack");  // 攻击时停下
-                }
-                else
-                {
-                    transform.Translate(new Vector3(0, 0, 1) * Speed * Time.deltaTime);  // 非攻击时才行走
-                    PlayerAnimation("IsWalking");  // 播放行走动画
+                    // transform.LookAt(Player.transform);  // 反应过快，不适合人物
+                    Vector3 player = new Vector3(Player.transform.position.x, 0, Player.transform.position.z);
+                    Vector3 self = new Vector3(this.transform.position.x, 0, this.transform.position.z);
+                    transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(player - self), 0.02f);
+                    // 以每次0.02f秒的频率，从起始向量 this.transform.rotation 旋转到目标向量 player - self，（Quaternion.LookRotation 让物体旋转到目标向量），实现丝滑转向
+
+                    if (dis <= attackDis)
+                    {
+                        // Debug.Log("Attack the player!");
+                        PlayerAnimation("IsAttack");  // 攻击时停下
+                    }
+                    else
+                    {
+                        AvoidWall();  // 避免撞墙
+                        transform.Translate(new Vector3(0, 0, 1) * Speed * Time.deltaTime);  // 非攻击时才行走
+                        PlayerAnimation("IsWalking");  // 播放行走动画
+                    }
                 }
             }
             else
@@ -70,24 +72,14 @@ public class Bully : MonoBehaviour
         }
     }
 
+    [Header("碰撞设置")]
+    public float turnSpeed = 5f;          // 转向速度
+    public float rayDistance = 2f;        // 射线检测距离
+    private bool isTurning = false;
     private void PatrolUpdate()
     {
         // 定时随机改变方向和状态
-        if (Time.time - lastTime > resetTime)
-        {
-            lastTime = Time.time;
-
-            // 随机决定移动状态：0=行走，1=待机
-            moveState = Random.Range(0, 2);
-
-            // 如果是行走状态，随机旋转一个角度
-            if (moveState == 0)
-            {
-                float randomAngle = Random.Range(-90f, 90f);
-                targetAngle = transform.eulerAngles.y + randomAngle;
-                isTurning = true;
-            }
-        }
+        RandomEulerAndResetTime();
 
         // 正在转向时，不移动
         if (isTurning)
@@ -96,13 +88,23 @@ public class Bully : MonoBehaviour
         if (moveState == 0)
         {
             PlayerAnimation("IsWalking");
-            transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+            AvoidWall();  // 避免撞墙
+            transform.rotation = Quaternion.Lerp(this.transform.rotation, targetRotation, 0.02f);  // 丝滑转向
+            transform.Translate(Vector3.forward * Speed * Time.deltaTime);  // 沿着丝滑转向后的方向往前走
         }
         else
         {
             PlayerAnimation("IsIdle");
         }
     }
+    private void AvoidWall()
+    {
+        if (Physics.Raycast(transform.position, Vector3.forward, rayDistance))  // 从 Bully坐标 向 前方 发射一条 rayDistance 长度的射线，如果碰到东西就返回true
+        {
+            transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(GetRandomEulerAngle("y")), 0.02f);
+        }
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -114,7 +116,7 @@ public class Bully : MonoBehaviour
         else  // 比如撞墙
         {
             // AvoidWall();
-            transform.Rotate(0, 180, 0); // 掉头
+            transform.Rotate(0, 45, 0); // 掉头
         }
     }
 
@@ -133,28 +135,6 @@ public class Bully : MonoBehaviour
         // NavMeshAgent agent = GetComponent<NavMeshAgent>();
         // if (agent != null) agent.velocity = Vector3.zero;
     }
-
-    Vector3 GetBestAvoidDirection()
-    {
-        // 检测三个方向：左、右、后
-        Vector3[] directions = {
-            transform.right,      // 右
-            -transform.right,     // 左
-            -transform.forward    // 后
-        };
-
-        foreach (Vector3 dir in directions)
-        {
-            RaycastHit hit;
-            if (!Physics.Raycast(transform.position, dir, rayDistance))
-            {
-                return dir; // 返回第一个没有墙壁的方向
-            }
-        }
-
-        // 如果都有墙，直接掉头
-        return -transform.forward;
-    }
     */
 
 
@@ -170,6 +150,7 @@ public class Bully : MonoBehaviour
     private float lastTime = 0;  // 上一次时间
     private float resetTime = 4;  // 间隔时间
     private int moveState = 1;  // 1 表示Idle；0 表示Walk
+    private Quaternion targetRotation;
 
     private void RandomEulerAndResetTime()
     {
@@ -177,15 +158,32 @@ public class Bully : MonoBehaviour
         {
             lastTime = Time.time;  // 上一次时间更新为当前时间
 
-            moveState = UnityEngine.Random.Range(0, 2);
-
-            // 关键修改：改变状态的同时也改变方向
-            if (moveState == 0)  // 行走状态才改变方向
-            {
-                float randomAngle = Random.Range(-90f, 90f);
-                transform.Rotate(0, randomAngle, 0);
-            }
+            resetTime = UnityEngine.Random.Range(1f, 5f);  // 间隔时间随机
+            moveState = UnityEngine.Random.Range(0, 2);  // 运动状态随机
+            targetRotation = Quaternion.Euler(GetRandomEulerAngle("y"));
         }
+    }
+
+    // 随机旋转
+    private Vector3 GetRandomEulerAngle(string axis, int step = 45)  // 这里step表示转动角度步幅
+    {
+        float x = 0, y = 0, z = 0;
+
+        int r = 360 / step;
+        if (axis.Equals("x"))
+        {
+            x = UnityEngine.Random.Range(1, r) * step;  // 意思是每次都以step的倍数转向（因转动角度太小会看不出来）
+        }
+        if (axis.Equals("y"))
+        {
+            y = UnityEngine.Random.Range(1, r) * step;
+        }
+        if (axis.Equals("z"))
+        {
+            z = UnityEngine.Random.Range(1, r) * step;
+        }
+
+        return new Vector3(x, y, z);
     }
 
     //随即旋转

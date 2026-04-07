@@ -94,6 +94,45 @@ public class PlayerHealth : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H)) Heal(20);
     }
 
+    private float damageCooldown = 0f;
+    private float damageInterval = 1f;  // 每1秒扣一次血
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Bully"))
+        {
+            TakeDamage(15);
+            damageCooldown = 0f;  // 重置计时器
+            Debug.Log("Player is under attacked!");
+        }
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Bully"))
+        {
+            // 累加时间
+            damageCooldown += Time.deltaTime;
+
+            // 达到1秒，再次扣血
+            if (damageCooldown >= damageInterval)
+            {
+                TakeDamage(15);
+                damageCooldown = 0f;  // 重置计时器
+                Debug.Log("Player is under continuous attack!");
+            }
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Bully"))
+        {
+            damageCooldown = 0f;  // 离开时重置计时器
+            Debug.Log("Player escaped from Bully");
+        }
+    }
+
+
+
+
     // ================= 勇气剧情触发接口 =================
 
     public void InitLevel0()

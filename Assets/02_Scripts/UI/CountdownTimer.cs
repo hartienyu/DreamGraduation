@@ -64,6 +64,11 @@ public class CountdownTimer : MonoBehaviour
         timerText.gameObject.SetActive(true); // 显示倒计时文本
     }
 
+    public float GetCurrentTime()  // 外部调用检查倒计时现在剩余时间
+    {
+        return currentTime;
+    }
+
     // 开放给外部调用的加减时间方法（用于测试或奖惩）
     public void AdjustTime(float seconds)
     {

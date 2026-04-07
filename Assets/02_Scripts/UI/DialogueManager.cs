@@ -33,7 +33,7 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
-    // ========== 新增：定义一个对话结束的事件通知 ==========
+    // ========== 定义一个对话结束的事件通知 ==========
     public event Action<string> OnDialogueFinished;
     private string currentDialogueName;
 
@@ -268,7 +268,7 @@ public class DialogueManager : MonoBehaviour
             activeTrigger = null; // 用完清空，防止影响下次对话
         }
 
-        // ========== 新增：对话结束(UI已关闭)，广播通知当前对话已结束 ==========
+        // ========== 对话结束(UI已关闭)，广播通知当前对话已结束 ==========
         OnDialogueFinished?.Invoke(currentDialogueName);
     }
 
