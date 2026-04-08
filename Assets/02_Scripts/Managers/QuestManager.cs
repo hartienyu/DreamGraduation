@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-// 任务管理器（每个任务的定义、其他外部调用接口）
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
@@ -29,24 +28,6 @@ public class QuestManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    private GameObject bully;
-    private bool hasBullyAppeared = false;  // 防止重复激活
-    private bool setBullyAppeared = false;  // 是否激活Bully出现
-    public void Start()
-    {
-        bully = GameObject.FindWithTag("Bully");
-        if (bully == null)
-        {
-            Debug.LogError("找不到 Tag 为 'Bully' 的物体！请检查 Tag 设置");
-        }
-        else
-        {
-            // 确保一开始是隐藏的
-            bully.SetActive(false);
-            Debug.Log($"Bully 初始状态已设置为隐藏");
-        }
-    }
-
     private void Update()
     {
         // Press R to start the quest if it hasn't started yet
@@ -54,28 +35,7 @@ public class QuestManager : MonoBehaviour
         {
             StartQuest();
         }
-
-        // 对于所有任务，只要时间少于10分钟，就让bully出现开始巡逻
-        if (!hasBullyAppeared && CountdownTimer.Instance.GetCurrentTime() <= 600f && CountdownTimer.Instance.GetCurrentTime() > 0)
-        {
-            if (bully != null)
-            {
-                bully.SetActive(true);
-                hasBullyAppeared = true;
-                Debug.Log("霸凌者出现");
-            }
-        }
-        else if (hasBullyAppeared && CountdownTimer.Instance.GetCurrentTime() <= 0f)  // 只在已出现且时间≤0时隐藏
-        {
-            if (bully != null)
-            {
-                bully.SetActive(false);
-                hasBullyAppeared = false;
-                Debug.Log("霸凌者消失");
-            }
-        }
     }
-
 
     public void StartQuest()
     {
@@ -88,31 +48,6 @@ public class QuestManager : MonoBehaviour
         onQuestStartedEvent?.Invoke(); // 通知所有的 InteractableItem 亮光
         OnQuestStarted?.Invoke(); // Trigger UI update
     }
-
-
-    // ========== 当监听到任意对话结束时触发任务开始 ==========
-    public void OnDialogueFinishedHandler(string finishedDialogueName)
-    {
-        // 结束对话的是 Huahuo3
-        if (finishedDialogueName == "Huahuo3")
-        {
-            StartQuest();
-            Debug.Log("Huahuo3 对话已完全结束，任务正式开启！");
-
-            // 在Huahuo3结束后开启20分钟(1200秒)的倒计时
-            if (CountdownTimer.Instance != null)
-            {
-                CountdownTimer.Instance.StartCountdown(630f);
-            }
-
-            // 任务触发后注销事件，避免重复触发或内存泄漏
-            if (DialogueManager.Instance != null)
-            {
-                DialogueManager.Instance.OnDialogueFinished -= OnDialogueFinishedHandler;
-            }
-        }
-    }
-
 
     // Called by the items when the player picks them up
     public void CollectItem()
@@ -133,6 +68,18 @@ public class QuestManager : MonoBehaviour
     {
         isQuestActive = false;
         Debug.Log("Quest Completed!");
-        OnQuestCompleted?.Invoke(); // Trigger UI update
+
+        // 【新增逻辑】：羁绊任务完成后触发记忆碎片解锁
+        if (MemoryManager.Instance != null && !MemoryManager.Instance.isMemory1Unlocked)
+        {
+            MemoryManager.Instance.UnlockMemory1_Task1Completed();
+        }
+        else if (MemoryManager.Instance != null && MemoryManager.Instance.isMemory1Unlocked)
+        {
+            // 如果片段1已经解锁了，说明这次完成的是任务2
+            MemoryManager.Instance.UnlockMemory2_Task2Completed();
+        }
+
+        OnQuestCompleted?.Invoke(); // Trigger UI update，也用来激活后续物体或剧情
     }
 }
