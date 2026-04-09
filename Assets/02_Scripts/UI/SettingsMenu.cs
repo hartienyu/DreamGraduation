@@ -102,11 +102,27 @@ public class SettingsMenu : MonoBehaviour
     public void OpenSettingsMenu()
     {
         if (settingsPanel != null) settingsPanel.SetActive(true);
+
+        // 如果在游戏场景内通过按钮打开设置面板，也要暂停时间并解锁鼠标
+        if (!isInMainMenu)
+        {
+            Time.timeScale = 0f;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
     // 设置界面上的 "X 关闭按钮" 拖拽这个事件
     public void CloseSettingsMenu()
     {
         if (settingsPanel != null) settingsPanel.SetActive(false);
+
+        // 如果在游戏场景内通过按钮关闭设置面板，必须恢复时间并锁定鼠标
+        if (!isInMainMenu)
+        {
+            Time.timeScale = 1f;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     // ================= 声音设置 =================
