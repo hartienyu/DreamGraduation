@@ -18,8 +18,10 @@ public class MemoryManager : MonoBehaviour
 
     // 事件：通知UI系统弹出对应的记忆碎片片段
     public event Action<string> OnMemoryUnlocked;
-    // 事件：通知结局触发
+    // 事件：通知结局触发（真结局）
     public event Action OnTrueEndingTriggered;
+    // 事件：通知结局触发（普通结局）
+    public event Action OnNormalEndingTriggered;
 
     private void Awake()
     {
@@ -57,9 +59,14 @@ public class MemoryManager : MonoBehaviour
 
     public void TriggerTrueEnding()
     {
-        Debug.Log("【结局系统】片段2阅读完毕，记忆完全解锁，直面恐惧。触发救赎真结局！");
+        Debug.Log("【结局系统】记忆完全解锁且勇气值 >= 100，直面恐惧。触发救赎真结局！");
         OnTrueEndingTriggered?.Invoke();
-        // 在这里可以接入过场动画、白屏、回到主菜单等结算逻辑
+    }
+
+    public void TriggerNormalEnding()
+    {
+        Debug.Log("【结局系统】记忆完全解锁但勇气值 < 100，未能直面恐惧。触发普通结局！");
+        OnNormalEndingTriggered?.Invoke();
     }
 }
 

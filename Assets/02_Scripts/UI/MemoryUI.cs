@@ -24,6 +24,7 @@ public class MemoryUI : MonoBehaviour
         {
             MemoryManager.Instance.OnMemoryUnlocked += ShowMemory;
             MemoryManager.Instance.OnTrueEndingTriggered += ShowTrueEnding;
+            MemoryManager.Instance.OnNormalEndingTriggered += ShowNormalEnding;
         }
         else
         {
@@ -43,6 +44,7 @@ public class MemoryUI : MonoBehaviour
         {
             MemoryManager.Instance.OnMemoryUnlocked -= ShowMemory;
             MemoryManager.Instance.OnTrueEndingTriggered -= ShowTrueEnding;
+            MemoryManager.Instance.OnNormalEndingTriggered -= ShowNormalEnding;
         }
     }
 
@@ -66,7 +68,10 @@ public class MemoryUI : MonoBehaviour
         }
     }
 
-    private bool isEndingTriggered = false; // 用于判定是否已经进入真结局
+    private bool isEndingTriggered = false; // 用于判定是否已经进入结算状态
+    
+    public enum EndingState { None, FinalTrueEnding, FinalNormalEnding }
+    private EndingState currentEndingState = EndingState.None;
 
     /// <summary>
     /// 点击关闭按钮时的逻辑
@@ -75,6 +80,23 @@ public class MemoryUI : MonoBehaviour
     {
         if (memoryPanel != null)
         {
+            if (currentEndingState == EndingState.FinalTrueEnding)
+            {
+                Time.timeScale = 1f;
+                // 点击了真结局弹窗上的关闭按钮 -> 跳转到Reality场景
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Reality");
+                return;
+            }
+            else if (currentEndingState == EndingState.FinalNormalEnding)
+            {
+                Time.timeScale = 1f;
+                // 点击了普通结局的弹窗 -> 这里可以按需跳转，或者仅仅关闭UI继续新流程
+                memoryPanel.SetActive(false);
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                return;
+            }
+
             memoryPanel.SetActive(false);
 
             // 恢复游戏时间
@@ -85,12 +107,23 @@ public class MemoryUI : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
 
             // ===== 触发后续剧情 =====
-            // 如果玩家刚刚刚读完了第二段记忆，且没触发过真结局，就在关闭后触发真结局
+            // 如果玩家刚刚读完了第二段记忆，且没触发过结局，就在关闭后"重新弹出"结局面板
             if (MemoryManager.Instance != null && MemoryManager.Instance.isMemory2Unlocked && !isEndingTriggered)
             {
-                Debug.Log("【UI】读者关闭了最后的记忆碎片，直接切入真结局结算！");
+                Debug.Log("【UI】读者关闭了最后的记忆碎片，开始进行结局结算！");
                 isEndingTriggered = true;
-                MemoryManager.Instance.TriggerTrueEnding();
+                
+                // 判断勇气值来决定结局走向
+                if (PlayerHealth.Instance != null && PlayerHealth.Instance.currentCourage >= 100f)
+                {
+                    Debug.Log("【结局判定】当前勇气值 >= 100，触发真结局！");
+                    MemoryManager.Instance.TriggerTrueEnding();
+                }
+                else
+                {
+                    Debug.Log("【结局判定】当前勇气值 < 100，触发普通结局！");
+                    MemoryManager.Instance.TriggerNormalEnding();
+                }
                 return;
             }
 
@@ -99,17 +132,38 @@ public class MemoryUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示真结局（如果你想用纯UI结算就在这里做）
+    /// 显示真结局弹窗
     /// </summary>
     private void ShowTrueEnding()
     {
+        currentEndingState = EndingState.FinalTrueEnding;
         if (memoryPanel != null && memoryTextDisplay != null)
         {
-            memoryTextDisplay.text = "【真结局】\n\n你终于直面了恐惧，救下了小白......\n\n(游戏结束)";
+            memoryTextDisplay.text = "【真结局】\n\n那水盆里的影子不再陌生。这一次，你终于直面了恐惧。\n你拉着她的手跑出了那间幽闭的校舍。\n\n\n> 点击确认后将回到现实...";
             memoryPanel.SetActive(true);
             
-            // 隐藏关闭按钮，或者把关闭按钮的功能改成退出游戏/回主菜单
-            if (closeButton != null) closeButton.gameObject.SetActive(false);
+            // 保证按钮处于显示状态，可以点击进入下一场景
+            if (closeButton != null) closeButton.gameObject.SetActive(true);
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0f;
+        }
+    }
+
+    /// <summary>
+    /// 显示普通结局弹窗
+    /// </summary>
+    private void ShowNormalEnding()
+    {
+        currentEndingState = EndingState.FinalNormalEnding;
+        if (memoryPanel != null && memoryTextDisplay != null)
+        {
+            memoryTextDisplay.text = "【普通结局】\n\n你没能直面这一切的勇气，但是这所校园里，似乎还有其他的求救声......\n\n\n> 准备进入下一个“被救赎者”的新剧情";
+            memoryPanel.SetActive(true);
+            
+            // 保证按钮可见，点击关闭UI
+            if (closeButton != null) closeButton.gameObject.SetActive(true);
 
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;

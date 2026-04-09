@@ -138,6 +138,16 @@ public class EventTester : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha7)) PlayBranch("Global_BullySpot");
         if (Input.GetKeyDown(KeyCode.Alpha8)) PlayBranch("Global_BullySpotLeave");
         if (Input.GetKeyDown(KeyCode.Alpha9)) PlayBranch("Global_BadEnding");
+
+        // 快捷键增减勇气值
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (PlayerHealth.Instance != null) PlayerHealth.Instance.AddCourage(10f);
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (PlayerHealth.Instance != null) PlayerHealth.Instance.AddCourage(-10f);
+        }
     }
 
     // ========== 生成左上角的测试 GUI 按钮 ==========
@@ -177,7 +187,7 @@ public class EventTester : MonoBehaviour
         GUILayout.Space(10);
         if (GUILayout.Button("0. 【测试】强制触发五分钟警告"))
         {
-            ShowSplash("警告：他发现你了……仅剩五分钟！");
+            ShowSplash("警告：霸凌者来了！");
         }
 
         GUILayout.Space(10);
@@ -192,6 +202,21 @@ public class EventTester : MonoBehaviour
         {
             if (CountdownTimer.Instance != null)
                 CountdownTimer.Instance.AdjustTime(60f);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(10);
+        GUILayout.Label("【勇气值控制】");
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("-50勇气"))
+        {
+            if (PlayerHealth.Instance != null)
+                PlayerHealth.Instance.AddCourage(-50f);
+        }
+        if (GUILayout.Button("+50勇气"))
+        {
+            if (PlayerHealth.Instance != null)
+                PlayerHealth.Instance.AddCourage(50f);
         }
         GUILayout.EndHorizontal();
 
