@@ -136,6 +136,12 @@ public class PlayerHealth : MonoBehaviour
         AddCourage(50f);
         Debug.Log($"[Courage] 烧毁笔记本，获取 50 勇气值！继续保留在 Lv.0");
 
+        // 发放1个宝石
+        if (PlayerData.Instance != null) 
+        {
+            PlayerData.Instance.AddGem(1);
+        }
+
         // 剧情Task1.2结束后，触发记忆碎片1
         if (MemoryManager.Instance != null && !MemoryManager.Instance.isMemory1Unlocked)
         {

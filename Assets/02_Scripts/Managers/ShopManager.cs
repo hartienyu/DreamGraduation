@@ -9,6 +9,10 @@ using Cinemachine; // 必须引入，用于精准控制和锁定视角
 //*****************************************
 public class ShopManager : MonoBehaviour
 {
+    // 供其他脚本检查商店是否打开的全局状态标记
+    public static bool IsShopOpen = false;
+    public static int LastShopCloseFrame = -1; // 记录商店关闭时所在的帧数
+
     // 定义商品的数据结构
     [System.Serializable]
     public class ItemData
@@ -24,7 +28,7 @@ public class ShopManager : MonoBehaviour
     }
 
     // 物品效果枚举
-    public enum ItemEffect { Heal, MaxHealthUp, SpeedUp }
+    public enum ItemEffect { Heal, MaxHealthUp, SpeedUp, Skin }
 
     [Header("潜意识数据")]
     public int playerPoints = 2000;
@@ -36,6 +40,8 @@ public class ShopManager : MonoBehaviour
     [Header("UI 引用")]
     public GameObject shopPanel;
     public TextMeshProUGUI pointsText;
+    public TextMeshProUGUI gemText; // 【新增】宝石显示UI
+
 
     [Header("预制体生成配置")]
     public GameObject itemPrefab; // 拖入你刚做好的商品预制体 (ItemCard_Template)
@@ -74,6 +80,20 @@ public class ShopManager : MonoBehaviour
     private void UpdatePointsDisplay()
     {
         if (pointsText != null) pointsText.text = "记忆碎片: " + playerPoints;
+        
+        if (gemText != null)
+        {
+            if (PlayerData.Instance != null)
+            {
+                gemText.text = "宝石: " + PlayerData.Instance.gemCount;
+            }
+            else
+            {
+                // 如果找不到 PlayerData，至少让它显示 0，而不是不覆盖原本的占位符 "11111"
+                gemText.text = "宝石: 0";
+                Debug.LogWarning("警告：场景中没有找到 PlayerData 实例！请确保创建了一个空物体并挂载了 PlayerData 脚本。");
+            }
+        }
     }
 
     // 根据数据动态生成商店 UI
@@ -105,7 +125,9 @@ public class ShopManager : MonoBehaviour
     // 打开商店的方法（由场景里的桌子/触发器呼叫）
     public void OpenShop()
     {
+        IsShopOpen = true;
         shopPanel.SetActive(true);
+        UpdatePointsDisplay(); // 每次打开商店时刷新文本显示
 
         // 1. 解锁并显示鼠标指针，以便点击商品
         UnityEngine.Cursor.lockState = CursorLockMode.None;
@@ -130,6 +152,8 @@ public class ShopManager : MonoBehaviour
     // 退出商店的方法（绑定给 UI 右上角的关闭按钮，或由 Esc 键触发）
     public void OnExitButtonClicked()
     {
+        IsShopOpen = false;
+        LastShopCloseFrame = Time.frameCount; // 标记关闭的这一帧
         shopPanel.SetActive(false);
 
         // 1. 锁定并隐藏鼠标指针
@@ -159,6 +183,44 @@ public class ShopManager : MonoBehaviour
     {
         ItemData item = shopItems[index];
 
+        if (item.effectType == ItemEffect.Skin)
+        {
+            // 如果玩家已经拥有了这套皮肤，则进行切换
+            if (PlayerData.Instance != null && PlayerData.Instance.hasHuohuaSkin)
+            {
+                PlayerData.Instance.isHuohuaSkinEquipped = !PlayerData.Instance.isHuohuaSkinEquipped;
+                if (NPCSkinManager.Instance != null)
+                {
+                    NPCSkinManager.Instance.ToggleSkin(PlayerData.Instance.isHuohuaSkinEquipped);
+                }
+                // 刷新卡片 UI 显示新的切换状态
+                spawnedCards[index].SetupCard(this, index, item);
+                return;
+            }
+
+            // 购买皮肤逻辑（消耗宝石）
+            if (PlayerData.Instance != null && PlayerData.Instance.gemCount >= item.price)
+            {
+                PlayerData.Instance.gemCount -= item.price;
+                PlayerData.Instance.hasHuohuaSkin = true;
+                PlayerData.Instance.isHuohuaSkinEquipped = true; // 购买后默认装备
+                
+                if (NPCSkinManager.Instance != null)
+                {
+                    NPCSkinManager.Instance.ToggleSkin(true);
+                }
+                
+                UpdatePointsDisplay();
+                spawnedCards[index].SetupCard(this, index, item);
+            }
+            else
+            {
+                Debug.Log("提示：宝石不足，无法兑换皮肤...");
+            }
+            return;
+        }
+
+        // 常规商品逻辑（消耗碎片）
         if (playerPoints >= item.price)
         {
             // 扣钱与扣库存

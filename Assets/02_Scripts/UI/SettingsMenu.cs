@@ -66,8 +66,9 @@ public class SettingsMenu : MonoBehaviour
     private void Update()
     {
         // === ESC 监听逻辑 ===
-        // 仅仅在游戏场景（而非主菜单）中，才允许按下 Escape 呼出和关闭菜单
-        if (!isInMainMenu && Input.GetKeyDown(KeyCode.Escape))
+        // 仅仅在游戏场景（而非主菜单）中，且商店未开启时，才允许按下 Escape 呼出和关闭菜单
+        // 如果商店刚刚在这一帧被关闭（ShopManager.LastShopCloseFrame == Time.frameCount），也不应该打开设置面板
+        if (!isInMainMenu && Input.GetKeyDown(KeyCode.Escape) && !ShopManager.IsShopOpen && ShopManager.LastShopCloseFrame != Time.frameCount)
         {
             ToggleSettingsPanel();
         }
