@@ -129,6 +129,12 @@ public class PlayerHealth : MonoBehaviour
         maxCourage = 200f;
         AddCourage(50f);
         Debug.Log($"[Courage] 烧毁笔记本，等级提升至 Lv.1，上限 200！");
+
+        // 剧情Task1.2结束后，触发记忆碎片1
+        if (MemoryManager.Instance != null && !MemoryManager.Instance.isMemory1Unlocked)
+        {
+            MemoryManager.Instance.UnlockMemory1_Task1Completed();
+        }
     }
 
     public void UnlockLevel2_DisposePaper()
@@ -138,6 +144,12 @@ public class PlayerHealth : MonoBehaviour
         maxCourage = 300f;
         AddCourage(50f);
         Debug.Log($"[Courage] 处理画纸，等级提升至 Lv.2，上限 300！");
+
+        // 剧情Task2结束后，触发记忆碎片2
+        if (MemoryManager.Instance != null && !MemoryManager.Instance.isMemory2Unlocked)
+        {
+            MemoryManager.Instance.UnlockMemory2_Task2Completed();
+        }
     }
 
     public void AddCourage(float amount)

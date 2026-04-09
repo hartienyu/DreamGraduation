@@ -69,17 +69,6 @@ public class QuestManager : MonoBehaviour
         isQuestActive = false;
         Debug.Log("Quest Completed!");
 
-        // 【新增逻辑】：羁绊任务完成后触发记忆碎片解锁
-        if (MemoryManager.Instance != null && !MemoryManager.Instance.isMemory1Unlocked)
-        {
-            MemoryManager.Instance.UnlockMemory1_Task1Completed();
-        }
-        else if (MemoryManager.Instance != null && MemoryManager.Instance.isMemory1Unlocked)
-        {
-            // 如果片段1已经解锁了，说明这次完成的是任务2
-            MemoryManager.Instance.UnlockMemory2_Task2Completed();
-        }
-
         OnQuestCompleted?.Invoke(); // Trigger UI update，也用来激活后续物体或剧情
     }
 }

@@ -66,6 +66,8 @@ public class MemoryUI : MonoBehaviour
         }
     }
 
+    private bool isEndingTriggered = false; // 用于判定是否已经进入真结局
+
     /// <summary>
     /// 点击关闭按钮时的逻辑
     /// </summary>
@@ -83,8 +85,15 @@ public class MemoryUI : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
 
             // ===== 触发后续剧情 =====
-            // 因为很多剧情都需要等到玩家读完长文点击关闭后才开始
-            // 你可以通过 UnityEvent 挂载，或者直接在这里激活下一阶段的 Trigger
+            // 如果玩家刚刚刚读完了第二段记忆，且没触发过真结局，就在关闭后触发真结局
+            if (MemoryManager.Instance != null && MemoryManager.Instance.isMemory2Unlocked && !isEndingTriggered)
+            {
+                Debug.Log("【UI】读者关闭了最后的记忆碎片，直接切入真结局结算！");
+                isEndingTriggered = true;
+                MemoryManager.Instance.TriggerTrueEnding();
+                return;
+            }
+
             Debug.Log("【UI】读者关闭记忆碎片，准备继续游戏流程。");
         }
     }
