@@ -1,0 +1,19 @@
+﻿{
+  "nodeID": "TrueEnding5",
+  "dialogue": [
+    {"speaker": "花火", "content": "那个梦里……是不是有一个你为她烧掉练习册的人？"},
+    {"speaker": "你", "content": "嗯..."},
+    {"speaker": "花火", "content": "是你。"},
+    {"speaker": "花火", "content": "我也做过那个梦。醒来以后，我以为只是梦。但我总觉得……有人在什么地方在意着我。"},
+    {"speaker": "花火", "content": "谢谢你。因为那个梦，我开始觉得……我值得被看见。"},
+    {"speaker": "花火", "content": "我终于交到新朋友了！若不是因为有你，我不可能踏出这一步.."},
+    {"speaker": "你", "content": "嗯..."},
+    {"speaker": "花火", "content": "重新认识一下吧。我叫花火。不是梦里的那个。是现在的、活着的花火。"},
+    {"speaker": "你", "content": "初音未来。"},
+    {"speaker": "你", "content": "初音未来……好美的名字。"},
+    {"speaker": "你", "content": "谢谢你。"},
+    {"speaker": "你", "content": "..."},
+    {"speaker": "你", "content": "啊！我得先走了，我和XX约了去吃个饭，之后再聊！"},
+    {"speaker": "你", "content": "好的，再见..."}
+  ]
+}

@@ -1,0 +1,14 @@
+﻿{
+  "nodeID": "TrueEnding4",
+  "dialogue": [
+    {"speaker": "你", "content": "花...火...？"},
+
+    {"speaker": "花火", "content": "你怎么知道我的名字？"},
+    {"speaker": "你", "content": "我...做过一个梦。"},
+    {"speaker": "花火", "content": "梦？"},
+    {"speaker": "你", "content": "梦里有一间旧校舍。昏暗的教室，有一本写满字的练习册... 还有一个女孩。"},
+
+    {"speaker": "花火", "content": "瑕蝶，你先走吧，我待会儿跟上！"},
+    {"speaker": "夏蝶", "content": "好，我先走了。"}
+  ]
+}
