@@ -39,6 +39,43 @@ public class CountdownTimer : MonoBehaviour
         {
             bullyObject.SetActive(false);
         }
+
+        // 读取存档中的倒计时状态
+        LoadTimerFromSave();
+    }
+
+    private void LoadTimerFromSave()
+    {
+        if (ProgressManager.Instance != null && ProgressManager.Instance.GetCurrentSaveData() != null)
+        {
+            GameSaveData saveData = ProgressManager.Instance.GetCurrentSaveData();
+            if (saveData.remainingTimer > 0)
+            {
+                currentTime = saveData.remainingTimer;
+                hasTriggered5MinSplash = saveData.hasTriggered5MinSplash;
+                isCountingDown = true;
+
+                if (timerText != null) timerText.gameObject.SetActive(true);
+
+                // 如果已经过了触发时间，唤醒霸凌者
+                if (hasTriggered5MinSplash || currentTime <= 600f) 
+                {
+                    ActivateBully();
+                    hasTriggered5MinSplash = true; // 确保布尔值正确同步
+                }
+            }
+        }
+    }
+
+    // 可以在外部或保存系统调用此方法同步
+    public void ForceSaveTimer()
+    {
+        if (ProgressManager.Instance != null && ProgressManager.Instance.GetCurrentSaveData() != null)
+        {
+            GameSaveData saveData = ProgressManager.Instance.GetCurrentSaveData();
+            saveData.remainingTimer = isCountingDown ? currentTime : -1f;
+            saveData.hasTriggered5MinSplash = hasTriggered5MinSplash;
+        }
     }
 
     private void Update()

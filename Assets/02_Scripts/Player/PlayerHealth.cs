@@ -45,14 +45,58 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        // 游戏开始，初始化Lv0状态
-        InitLevel0();
+        // ================= 新增：从进度管理器读取已保存得血量与勇气值 =================
+        LoadStatsFromSave();
 
         // 监听对话系统，处理勇气升级逻辑
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.OnDialogueFinished += HandleDialogueFinished;
         }
+    }
+
+    private void LoadStatsFromSave()
+    {
+        if (ProgressManager.Instance != null && ProgressManager.Instance.GetCurrentSaveData() != null)
+        {
+            GameSaveData saveData = ProgressManager.Instance.GetCurrentSaveData();
+            currentCourage = saveData.courageValue;
+            UpdateMaxHealth();
+            currentHealth = (int)saveData.currentHealth;
+            
+            // 补充：读取时还原玩家位置（如果坐标不是世界绝对零原点，则假定有存档位置）
+            if (saveData.lastPlayerPosition != Vector3.zero)
+            {
+                CharacterController cc = GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false;
+                transform.position = saveData.lastPlayerPosition;
+                if (cc != null) cc.enabled = true;
+            }
+        }
+        else
+        {
+            // 如果不存在管理器（测试时单独运行场景），执行原初始化策略
+            InitLevel0();
+        }
+        UpdateAllUI();
+    }
+
+    // 更新存档中的数据并执行即时保存（当你更新血量或勇气时应当调用）
+    public void ForceSaveStats()
+    {
+        if (ProgressManager.Instance == null) return;
+        GameSaveData saveData = ProgressManager.Instance.GetCurrentSaveData();
+        saveData.currentHealth = currentHealth;
+        saveData.courageValue = (int)currentCourage;
+        saveData.lastPlayerPosition = transform.position; // 可以顺便记一下位置
+        
+        // 顺便保存计时器
+        if (CountdownTimer.Instance != null)
+        {
+            CountdownTimer.Instance.ForceSaveTimer();
+        }
+
+        ProgressManager.Instance.SaveProgress();
     }
 
     private void OnDestroy()
@@ -198,6 +242,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        currentHealth -= damage;
+        ForceSaveStats();
         if (isDead) return;
 
         currentHealth -= damage;
@@ -321,3 +367,4 @@ public class PlayerHealth : MonoBehaviour
         UpdateAllUI();
     }
 }
+

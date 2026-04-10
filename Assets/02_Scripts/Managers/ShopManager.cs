@@ -30,8 +30,8 @@ public class ShopManager : MonoBehaviour
     // 物品效果枚举
     public enum ItemEffect { Heal, MaxHealthUp, SpeedUp, Skin }
 
-    [Header("潜意识数据")]
-    public int playerPoints = 2000;
+    // 废弃旧的 playerPoints，统一使用 PlayerData.Instance 的碎片数据
+    // public int playerPoints = 2000; 
 
     [Header("系统引用")]
     public PlayerHealth playerHealth;
@@ -55,6 +55,30 @@ public class ShopManager : MonoBehaviour
 
     void Start()
     {
+        // 尝试从存档中读取并同步库存数据
+        if (ProgressManager.Instance != null && ProgressManager.Instance.GetCurrentSaveData() != null)
+        {
+            GameSaveData saveData = ProgressManager.Instance.GetCurrentSaveData();
+            
+            // 确保如果存档里的商店列表长度正常，就覆盖现有库存
+            if (saveData.remainingShopQuantities.Count == shopItems.Count)
+            {
+                for (int i = 0; i < shopItems.Count; i++)
+                {
+                    shopItems[i].maxQuantity = saveData.remainingShopQuantities[i];
+                }
+            }
+            else
+            {
+                // 新存档：初始化商店库存列表
+                saveData.remainingShopQuantities.Clear();
+                foreach (var item in shopItems)
+                {
+                    saveData.remainingShopQuantities.Add(item.maxQuantity);
+                }
+            }
+        }
+
         UpdatePointsDisplay();
         GenerateShopUI();
 
@@ -79,8 +103,23 @@ public class ShopManager : MonoBehaviour
 
     private void UpdatePointsDisplay()
     {
+<<<<<<< HEAD
         if (pointsText != null) pointsText.text = "裂痕碎片: " + playerPoints;
         
+=======
+        if (pointsText != null) 
+        {
+            if (PlayerData.Instance != null)
+            {
+                pointsText.text = "记忆碎片: " + PlayerData.Instance.memoryFragmentsCount;
+            }
+            else
+            {
+                pointsText.text = "记忆碎片: 0";
+            }
+        }
+
+>>>>>>> 70e91402905078e93060fd592f6dd09893c6299d
         if (gemText != null)
         {
             if (PlayerData.Instance != null)
@@ -198,20 +237,26 @@ public class ShopManager : MonoBehaviour
                 return;
             }
 
-            // 购买皮肤逻辑（消耗宝石）
+                // 购买皮肤逻辑（消耗宝石）
             if (PlayerData.Instance != null && PlayerData.Instance.gemCount >= item.price)
             {
                 PlayerData.Instance.gemCount -= item.price;
                 PlayerData.Instance.hasHuohuaSkin = true;
                 PlayerData.Instance.isHuohuaSkinEquipped = true; // 购买后默认装备
-                
+
                 if (NPCSkinManager.Instance != null)
                 {
                     NPCSkinManager.Instance.ToggleSkin(true);
                 }
-                
+
                 UpdatePointsDisplay();
                 spawnedCards[index].SetupCard(this, index, item);
+
+                // 即时保存
+                if (ProgressManager.Instance != null) 
+                {
+                    ProgressManager.Instance.SaveProgress();
+                }
             }
             else
             {
@@ -221,10 +266,10 @@ public class ShopManager : MonoBehaviour
         }
 
         // 常规商品逻辑（消耗碎片）
-        if (playerPoints >= item.price)
+        if (PlayerData.Instance != null && PlayerData.Instance.memoryFragmentsCount >= item.price)
         {
             // 扣钱与扣库存
-            playerPoints -= item.price;
+            PlayerData.Instance.memoryFragmentsCount -= item.price;
             item.maxQuantity--;
 
             UpdatePointsDisplay();
@@ -232,6 +277,18 @@ public class ShopManager : MonoBehaviour
 
             // 刷新该卡片的 UI（同步数量或变成售罄状态）
             spawnedCards[index].SetupCard(this, index, item);
+
+            // 将库存数量同步到存档缓存中
+            if (ProgressManager.Instance != null && ProgressManager.Instance.GetCurrentSaveData() != null)
+            {
+                if (index < ProgressManager.Instance.GetCurrentSaveData().remainingShopQuantities.Count)
+                {
+                    ProgressManager.Instance.GetCurrentSaveData().remainingShopQuantities[index] = item.maxQuantity;
+                }
+                
+                // 进行即时保存
+                ProgressManager.Instance.SaveProgress();
+            }
         }
         else
         {
