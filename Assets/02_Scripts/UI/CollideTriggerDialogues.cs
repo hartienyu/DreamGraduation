@@ -1,7 +1,7 @@
 using Cinemachine;
 using UnityEngine;
 
-// 此文件只控制对话碰撞箱
+// 此文件只控制对话碰撞箱（检测是否进入碰撞箱、处理锁定镜头）
 public class CollideTriggerDialogues : MonoBehaviour
 {
     // 在unity拖入object

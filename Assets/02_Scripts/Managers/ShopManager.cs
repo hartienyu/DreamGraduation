@@ -79,7 +79,7 @@ public class ShopManager : MonoBehaviour
 
     private void UpdatePointsDisplay()
     {
-        if (pointsText != null) pointsText.text = "º«“‰ÀÈ∆¨: " + playerPoints;
+        if (pointsText != null) pointsText.text = "¡—∫€ÀÈ∆¨: " + playerPoints;
         
         if (gemText != null)
         {

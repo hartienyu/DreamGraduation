@@ -1,8 +1,10 @@
 ﻿{
   "nodeID": "TrueEnding4",
   "dialogue": [
-    {"speaker": "你", "content": "花...火...？"},
+    {"speaker": "你", "content": "花...火...？",
+     "motion": true},
 
+    {"speaker": "花火", "content": "......"},
     {"speaker": "花火", "content": "你怎么知道我的名字？"},
     {"speaker": "你", "content": "我...做过一个梦。"},
     {"speaker": "花火", "content": "梦？"},

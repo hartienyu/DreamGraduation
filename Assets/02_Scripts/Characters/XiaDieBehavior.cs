@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
-public class HuoHuaBehavior : MonoBehaviour
+public class XiaDieBehavior : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float turnSpeed = 10f;
@@ -60,10 +60,10 @@ public class HuoHuaBehavior : MonoBehaviour
         float horizontal = 0f;
         float vertical = 0f;
 
-        if (Input.GetKey(KeyCode.LeftArrow)) horizontal = -1f;
-        if (Input.GetKey(KeyCode.RightArrow)) horizontal = 1f;
-        if (Input.GetKey(KeyCode.UpArrow)) vertical = 1f;
-        if (Input.GetKey(KeyCode.DownArrow)) vertical = -1f;
+        if (Input.GetKey(KeyCode.J)) horizontal = -1f;
+        if (Input.GetKey(KeyCode.L)) horizontal = 1f;
+        if (Input.GetKey(KeyCode.I)) vertical = 1f;
+        if (Input.GetKey(KeyCode.K)) vertical = -1f;
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 

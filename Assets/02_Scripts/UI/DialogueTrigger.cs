@@ -1,7 +1,7 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-// 此文件绑在碰撞箱，真正实现进入碰撞箱后链接JSON文件并弹出对话内容
+// 链接碰撞箱及对话功能（此文件绑在碰撞箱，真正实现进入碰撞箱后链接JSON文件并弹出对话内容）
 public class DialogueTrigger : MonoBehaviour
 {
     [Header("对话JSON文件")]
@@ -91,8 +91,6 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            
-
             // 开启对话，将自身配置的 branchDialogues 传给 DialogueManager
             DialogueManager.Instance.StartDialogue(dialogueJSON, triggerDialoguesBox, branchDialogues);
             dialogueTriggered = true;

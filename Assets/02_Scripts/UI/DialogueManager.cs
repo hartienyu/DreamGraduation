@@ -19,6 +19,7 @@ public class NewDialogueLine  // 对话格式
 {
     public string speaker;
     public string content;
+    public bool motion;  // NPC/玩家动作
     public DialogueOption[] options; // 剧情选项列表
 }
 
@@ -166,6 +167,21 @@ public class DialogueManager : MonoBehaviour
 
         currentLineIndex++;
 
+        // 判断这句话是否有附带其他事件（如：选项、NPC动作）
+        CheckIfAnyEventInDialogue(line);
+    }
+
+    public System.Action<string> OnDialogueMotion;
+    private void CheckIfAnyEventInDialogue(NewDialogueLine line)
+    {
+        // 检查是否有动作事件
+        if (line.motion)
+        {
+            // 触发动作事件，传递说话者名字
+            OnDialogueMotion?.Invoke(line.speaker);
+        }
+
+
         // 检查这一句话是否有附带的选项
         if (line.options != null && line.options.Length > 0)
         {
@@ -211,7 +227,7 @@ public class DialogueManager : MonoBehaviour
                 isWaitingForOption = false; // 继续让他正常走
             }
         }
-    }
+    } 
 
     private void OnOptionClicked(string nextFile)
     {
