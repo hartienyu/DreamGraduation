@@ -103,23 +103,18 @@ public class ShopManager : MonoBehaviour
 
     private void UpdatePointsDisplay()
     {
-<<<<<<< HEAD
-        if (pointsText != null) pointsText.text = "ÁÑºÛËéÆ¬: " + playerPoints;
-        
-=======
         if (pointsText != null) 
         {
             if (PlayerData.Instance != null)
             {
-                pointsText.text = "¼ÇÒäËéÆ¬: " + PlayerData.Instance.memoryFragmentsCount;
+                pointsText.text = "ÁÑºÛËéÆ¬: " + PlayerData.Instance.memoryFragmentsCount;
             }
             else
             {
-                pointsText.text = "¼ÇÒäËéÆ¬: 0";
+                pointsText.text = "ÁÑºÛËéÆ¬: 0";
             }
         }
 
->>>>>>> 70e91402905078e93060fd592f6dd09893c6299d
         if (gemText != null)
         {
             if (PlayerData.Instance != null)
