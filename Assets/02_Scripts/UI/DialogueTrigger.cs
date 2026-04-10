@@ -1,4 +1,3 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 // 链接碰撞箱及对话功能（此文件绑在碰撞箱，真正实现进入碰撞箱后链接JSON文件并弹出对话内容）

@@ -15599,7 +15599,7 @@ MonoBehaviour:
   hideOnExit: 1
   playerTag: Player
   nextColliderCube: {fileID: 1393660682}
-  NPC: {fileID: 439385355}
+  NPC: {fileID: 1807302098}
   forceLookAtItem: 0
   itemToLookAt: {fileID: 0}
 --- !u!65 &1755805261
@@ -15970,7 +15970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1807302099
 Transform:
   m_ObjectHideFlags: 0
@@ -16003,6 +16003,7 @@ MonoBehaviour:
   moveSpeed: 3
   turnSpeed: 10
   gravity: -9.81
+  lookAtDuration: 2
 --- !u!143 &1807302101
 CharacterController:
   m_ObjectHideFlags: 0
@@ -17158,8 +17159,8 @@ MonoBehaviour:
   objectToDisableOnTrigger: {fileID: 1443264368}
   branchDialogues:
   - {fileID: 4900000, guid: 1650d917e41be944fb8df87916a4a61a, type: 3}
-  - {fileID: 4900000, guid: 384320a72f0062a4b875417c09b4c0dc, type: 3}
-  nodeID: 9
+  - {fileID: 4900000, guid: 9b3280468dfcf0b4aab475a869d91267, type: 3}
+  nodeID: 13
 --- !u!114 &1979786271
 MonoBehaviour:
   m_ObjectHideFlags: 0
