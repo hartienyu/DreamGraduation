@@ -16,7 +16,7 @@ public class GameInitiator : MonoBehaviour
 
     private void LoadGameProgress(GameObject player)
     {
-        SaveData saveData = progressManager.GetCurrentSaveData();
+        GameSaveData saveData = progressManager.GetCurrentSaveData();
 
         Debug.Log($"加载游戏进度 - 上次节点: {saveData.lastCompletedNode}, 等级: {saveData.currentLevel}, Level1完成: {saveData.isLevel1Completed}，玩家上次位置：{saveData.lastPlayerPosition}");
 

@@ -215,6 +215,8 @@ GameObject:
   - component: {fileID: 1129645138}
   - component: {fileID: 1129645137}
   - component: {fileID: 1129645139}
+  - component: {fileID: 1129645140}
+  - component: {fileID: 1129645141}
   m_Layer: 0
   m_Name: MenuController
   m_TagString: Untagged
@@ -284,6 +286,34 @@ MonoBehaviour:
   fullscreenToggle: {fileID: 1622609697305567284}
   returnToMainMenuButton: {fileID: 1337258141}
   returnToGameButton: {fileID: 918662807}
+--- !u!114 &1129645140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129645136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06639c42ef068b64d90881d8c850f9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1129645141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129645136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45051557b8cd2b940b63e13d50984fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gemCount: 0
+  memoryFragmentsCount: 0
+  hasHuohuaSkin: 0
+  isHuohuaSkinEquipped: 0
 --- !u!114 &1326296542 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5695824417202518028, guid: 997b7064afd716545ac994b2918264b0, type: 3}

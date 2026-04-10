@@ -28,6 +28,8 @@ public class MainMenuManager : MonoBehaviour
     [Header("系统引用")]
     public AudioManager audioManager; // 确保这里是你的 UIAudioManager
 
+    private bool isTransitioning = false; // 新增：是否正在切换场景的安全锁
+
     void Start()
     {
         // 初始状态清理
@@ -38,14 +40,30 @@ public class MainMenuManager : MonoBehaviour
         if (titlePanel != null) titlePanel.SetActive(true);
         if (buttonPanel != null) buttonPanel.SetActive(true);
 
+        // ========== 新增：如果有存档记录，点亮“继续游戏”按钮 ==========
+        if (mainButtons.Length > 1) 
+        {
+            if (ProgressManager.Instance.HasSaveGame())
+            {
+                mainButtons[1].interactable = true; // 假设列表第2个(Index:1)是Continue
+            }
+            else
+            {
+                mainButtons[1].interactable = false;
+            }
+        }
+
         // 初始自动选中第一个“可点击”的按钮
         SelectFirstInteractableButton();
     }
 
     void Update()
     {
+        // 如果正在切换场景，彻底屏蔽按键检测以防物体销毁后报空引用
+        if (isTransitioning) return;
+
         // 如果正在加载，屏蔽所有输入
-        if (loadingPanel.activeSelf) return;
+        if (loadingPanel != null && loadingPanel.activeSelf) return;
 
         HandleEscInput();
         HandleNavigation();
@@ -176,22 +194,33 @@ public class MainMenuManager : MonoBehaviour
     }
 
     // ==========================================
-    // 按钮功能区
+    // 按钮功能区 (接入 ProgressManager)
     // ==========================================
     public void StartGame()
     {
-        StartCoroutine(LoadSceneAsync());
+        // 调用重置并创建新存档
+        ProgressManager.Instance.StartNewGame();
+        StartCoroutine(LoadSceneAsync(ProgressManager.Instance.GetCurrentSaveData().sceneName));
     }
 
-    private IEnumerator LoadSceneAsync()
+    public void ContinueGame()
     {
+        // 提取存档，进入保存中的那个场景
+        ProgressManager.Instance.ContinueGame();
+        StartCoroutine(LoadSceneAsync(ProgressManager.Instance.GetCurrentSaveData().sceneName));
+    }
+
+    private IEnumerator LoadSceneAsync(string targetScene)
+    {
+        isTransitioning = true; // 锁定：标记正在离开当前场景，拦截所有按键 Update
+
         if (titlePanel != null) titlePanel.SetActive(false);
         if (buttonPanel != null) buttonPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
 
         loadingPanel.SetActive(true);
 
-        AsyncOperation operation = SceneManager.LoadSceneAsync(gameSceneName);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(targetScene);
         operation.allowSceneActivation = false;
 
         float displayProgress = 0f;
@@ -248,3 +277,4 @@ public class MainMenuManager : MonoBehaviour
         SelectFirstInteractableButton(); // 取消退出，默认选中第一个
     }
 }
+

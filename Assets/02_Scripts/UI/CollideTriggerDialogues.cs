@@ -34,10 +34,9 @@ public class CollideTriggerDialogues : MonoBehaviour
     {
         get
         {
-            return isPlayerInTriggerBox && (!triggerOnce || !hasTriggered);
+            return isPlayerInTriggerBox && (!triggerOnce || !hasTriggered);   
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(playerTag))
@@ -73,6 +72,10 @@ public class CollideTriggerDialogues : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
+            if (!isPlayerInTriggerBox)
+            {
+                OnTriggerEnter(other);
+            }
             isPlayerInTriggerBox = true;
         }
     }

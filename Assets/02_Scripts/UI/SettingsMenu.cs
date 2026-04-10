@@ -158,10 +158,20 @@ public class SettingsMenu : MonoBehaviour
     // ================= 导航设置 (回到主菜单) =================
     public void GoToMainMenu()
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
 
         if (!isInMainMenu)
         {
+            // 在返回主菜单前，执行一次即时存档，保存目前的坐标与数据
+            if (PlayerHealth.Instance != null)
+            {
+                PlayerHealth.Instance.ForceSaveStats();
+            }
+            else if (ProgressManager.Instance != null)
+            {
+                ProgressManager.Instance.SaveProgress();
+            }
+
             SceneManager.LoadScene(mainMenuSceneName);
         }
     }

@@ -1276,7 +1276,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: da657d57334ba04449e966f621204cb5, type: 3}
   objectToDisableOnTrigger: {fileID: 779140507}
   branchDialogues: []
-  nodeID: 5
+  nodeID: 6
 --- !u!114 &215750413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,7 +2027,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: 9bd93f185bd3a224c8cf44aafc74265a, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 4
+  nodeID: 5
 --- !u!114 &360392629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3114,7 +3114,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: 97d4a9182be555048b36c38181f47239, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 3
+  nodeID: 4
 --- !u!114 &472241177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10324,6 +10324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gemCount: 0
+  memoryFragmentsCount: 0
   hasHuohuaSkin: 0
   isHuohuaSkinEquipped: 0
 --- !u!4 &1118772606 stripped
@@ -12811,7 +12812,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: d860d3b2b7c68f742960de165c9b0f9a, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 2
+  nodeID: 3
 --- !u!114 &1393660684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15703,7 +15704,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: 00a2b936eaf38264097213c6c84793cd, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 1
+  nodeID: 2
 --- !u!1 &1757073559
 GameObject:
   m_ObjectHideFlags: 0
@@ -15970,7 +15971,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1807302099
 Transform:
   m_ObjectHideFlags: 0
@@ -16779,7 +16780,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: a0890c8008182944dbb488ee93ad8315, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 8
+  nodeID: 9
 --- !u!114 &1956443381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17159,7 +17160,7 @@ MonoBehaviour:
   branchDialogues:
   - {fileID: 4900000, guid: 1650d917e41be944fb8df87916a4a61a, type: 3}
   - {fileID: 4900000, guid: 384320a72f0062a4b875417c09b4c0dc, type: 3}
-  nodeID: 12
+  nodeID: 9
 --- !u!114 &1979786271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17634,7 +17635,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: 11b3d7bbbc72414448961c7e92216961, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 0
+  nodeID: 1
 --- !u!114 &2013075326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17758,6 +17759,7 @@ GameObject:
   - component: {fileID: 2013531250}
   - component: {fileID: 2013531251}
   - component: {fileID: 2013531252}
+  - component: {fileID: 2013531253}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -17916,6 +17918,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 1753123844}
   reasonText: {fileID: 1393574346}
+--- !u!114 &2013531253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013531241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06639c42ef068b64d90881d8c850f9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2032248497
 GameObject:
   m_ObjectHideFlags: 0
@@ -18265,7 +18279,7 @@ MonoBehaviour:
   dialogueJSON: {fileID: 4900000, guid: 6fa62e4904d1a3840bc33b34446be9ff, type: 3}
   objectToDisableOnTrigger: {fileID: 0}
   branchDialogues: []
-  nodeID: 6
+  nodeID: 7
 --- !u!114 &2126694370
 MonoBehaviour:
   m_ObjectHideFlags: 0
